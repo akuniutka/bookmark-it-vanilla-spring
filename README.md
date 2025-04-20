@@ -11,4 +11,6 @@ student project at Yandex Practicum.
 
 ## How to start
 
-`./mvnw package && java -jar target/bookmark-it-1.0-SNAPSHOT.jar`
+```bash
+./mvnw package && java -jar target/bookmark-it-1.0-SNAPSHOT.jar
+```
