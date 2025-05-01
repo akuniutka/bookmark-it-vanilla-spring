@@ -1,0 +1,6 @@
+[
+  {
+    "level": "WARN",
+    "message": "DTO validation error: {email=[, exceeds], name=[contains, exceeds]}"
+  }
+]

@@ -1,0 +1,407 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "\"Bookmark It\" API Specification",
+    "description": "API specification for \"Bookmark It\" service.",
+    "contact": {
+      "email": "akuniutka@gmail.com"
+    },
+    "license": {
+      "name": "Apache 2.0",
+      "url": "https://www.apache.org/licenses/LICENSE-2.0.html"
+    },
+    "version": "1.0"
+  },
+  "jsonSchemaDialect": "https://spec.openapis.org/oas/3.1/dialect/base",
+  "servers": [
+    {
+      "url": "http://localhost:8080"
+    }
+  ],
+  "paths": {
+    "/users": {
+      "post": {
+        "description": "Creates a new user.",
+        "operationId": "createUser",
+        "requestBody": {
+          "description": "User details",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateUserRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "The user is created.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserDto"
+                },
+                "examples": {
+                  "default": {
+                    "$ref": "#/components/examples/UserCreated"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The request has wrong format."
+          },
+          "409": {
+            "description": "Another user with such email already exists."
+          }
+        },
+        "tags": [
+          "Users"
+        ]
+      },
+      "get": {
+        "description": "Returns a list of all users.",
+        "operationId": "getAllUsers",
+        "responses": {
+          "200": {
+            "description": "The list of users is returned.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/UserDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Users"
+        ]
+      }
+    },
+    "/users/{id}": {
+      "get": {
+        "description": "Returns a single user.",
+        "operationId": "getUserById",
+        "parameters": [
+          {
+            "name": "id",
+            "description": "ID of user to return",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The user is returned.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserDto"
+                },
+                "examples": {
+                  "default": {
+                    "$ref": "#/components/examples/UserCreated"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The user was not found."
+          }
+        },
+        "tags": [
+          "Users"
+        ]
+      },
+      "patch": {
+        "description": "Updates a single user.",
+        "operationId": "updateUser",
+        "parameters": [
+          {
+            "name": "id",
+            "description": "ID of user to update",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "requestBody": {
+          "description": "User details",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateUserRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "The user is updated.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserDto"
+                },
+                "examples": {
+                  "default": {
+                    "$ref": "#/components/examples/UserUpdated"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The request has wrong format."
+          },
+          "404": {
+            "description": "The user was not found."
+          },
+          "409": {
+            "description": "The user is marked as deleted or another user with such email already exists."
+          }
+        },
+        "tags": [
+          "Users"
+        ]
+      },
+      "delete": {
+        "description": "Marks a single user as deleted.",
+        "operationId": "deleteUserById",
+        "parameters": [
+          {
+            "name": "id",
+            "description": "ID of user to delete",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The user is marked as deleted.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserDto"
+                },
+                "examples": {
+                  "default": {
+                    "$ref": "#/components/examples/UserDeleted"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The user was not found."
+          }
+        },
+
+        "tags": [
+          "Users"
+        ]
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "CreateUserRequest": {
+        "description": "Create user request",
+        "type": "object",
+        "required": [
+          "firstName",
+          "lastName",
+          "email"
+        ],
+        "properties": {
+          "firstName": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 50,
+            "description": "User first name",
+            "examples": [
+              "John"
+            ]
+          },
+          "lastName": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 50,
+            "description": "User last name",
+            "examples": [
+              "Doe"
+            ]
+          },
+          "email": {
+            "type": "string",
+            "description": "User email",
+            "examples": [
+              "john@mail.com"
+            ]
+          }
+        }
+      },
+      "UpdateUserRequest": {
+        "description": "Update user request",
+        "type": "object",
+        "properties": {
+          "firstName": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 50,
+            "description": "User first name",
+            "examples": [
+              "Jack"
+            ]
+          },
+          "lastName": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 50,
+            "description": "User last name",
+            "examples": [
+              "Sparrow"
+            ]
+          },
+          "email": {
+            "type": "string",
+            "description": "User email",
+            "examples": [
+              "jack@mail.com"
+            ]
+          },
+          "state": {
+            "type": "string",
+            "description": "User state",
+            "examples": [
+              "BLOCKED"
+            ],
+            "enum": [
+              "ACTIVE",
+              "BLOCKED"
+            ]
+          }
+        }
+      },
+      "UserDto": {
+        "description": "",
+        "type": "object",
+        "required": [
+          "id",
+          "firstName",
+          "lastName",
+          "email",
+          "state",
+          "registrationDate"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "User ID",
+            "examples": [
+              "92f08b0a-4302-40ff-823d-b9ce18522552"
+            ]
+          },
+          "firstName": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 50,
+            "description": "User first name",
+            "examples": [
+              "John"
+            ]
+          },
+          "lastName": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 50,
+            "description": "User last name",
+            "examples": [
+              "Doe"
+            ]
+          },
+          "email": {
+            "type": "string",
+            "description": "User email",
+            "examples": [
+              "john@mail.com"
+            ]
+          },
+          "state": {
+            "type": "string",
+            "description": "User state",
+            "examples": [
+              "ACTIVE"
+            ],
+            "enum": [
+              "ACTIVE",
+              "BLOCKED",
+              "DELETED"
+            ]
+          },
+          "registrationDate": {
+            "type": "string",
+            "description": "User registration date",
+            "examples": [
+              "2001-02-03T04:05:06.789Z"
+            ]
+          }
+        }
+      }
+    },
+    "examples": {
+      "UserCreated": {
+        "value": {
+          "id": "92f08b0a-4302-40ff-823d-b9ce18522552",
+          "firstName": "John",
+          "lastName": "Doe",
+          "email": "john@mail.com",
+          "state": "ACTIVE",
+          "registrationDate": "2001-02-03T04:05:06.789Z"
+        }
+      },
+      "UserUpdated": {
+        "value": {
+          "id": "92f08b0a-4302-40ff-823d-b9ce18522552",
+          "firstName": "Jack",
+          "lastName": "Sparrow",
+          "email": "jack@mail.com",
+          "state": "BLOCKED",
+          "registrationDate": "2001-02-03T04:05:06.789Z"
+        }
+      },
+      "UserDeleted": {
+        "value": {
+          "id": "92f08b0a-4302-40ff-823d-b9ce18522552",
+          "firstName": "John",
+          "lastName": "Doe",
+          "email": "john@mail.com",
+          "state": "DELETED",
+          "registrationDate": "2001-02-03T04:05:06.789Z"
+        }
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "Users",
+      "description": "Operations about users"
+    }
+  ]
+}

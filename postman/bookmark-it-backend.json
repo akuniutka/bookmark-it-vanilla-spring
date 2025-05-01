@@ -1,0 +1,4172 @@
+{
+	"info": {
+		"_postman_id": "0a939980-1a76-4547-9a0f-7463acfe75d2",
+		"name": "Bookmark It API Tests",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "27052193",
+		"_collection_link": "https://my-team-3437.postman.co/workspace/Bookmark-It~dd138bf5-844e-4037-b6ad-282bb5a74a06/collection/27052193-0a939980-1a76-4547-9a0f-7463acfe75d2?action=share&source=collection_link&creator=27052193"
+	},
+	"item": [
+		{
+			"name": "Users",
+			"item": [
+				{
+					"name": "Validation",
+					"item": [
+						{
+							"name": "Required Fields",
+							"item": [
+								{
+									"name": "Create user without first name",
+									"event": [
+										{
+											"listen": "prerequest",
+											"script": {
+												"exec": [
+													"const testData = new TestData();",
+													"",
+													"const main = async () => {",
+													"    let userDetails = testData.getUserDetails();",
+													"    createUserRequest = {",
+													"        lastName: userDetails.lastName,",
+													"        email: userDetails.email",
+													"    };",
+													"",
+													"    pm.request.body.update({",
+													"        mode: 'raw',",
+													"        raw: JSON.stringify(createUserRequest),",
+													"        options: { raw: { language: 'json' } }",
+													"    });",
+													"};",
+													"",
+													"const interval = setInterval(() => {}, 1000);",
+													"",
+													"setTimeout(async () => ",
+													"    {",
+													"        try {",
+													"            await main();",
+													"        } catch (e) {",
+													"            console.error(e);",
+													"        } finally {",
+													"            clearInterval(interval);",
+													"        }",
+													"    },  ",
+													"    100 ",
+													");",
+													""
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										},
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test('Response status should be.400', () => {",
+													"    pm.response.to.be.badRequest;",
+													"});",
+													""
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/users",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"users"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Create user without last name",
+									"event": [
+										{
+											"listen": "prerequest",
+											"script": {
+												"exec": [
+													"const testData = new TestData();",
+													"",
+													"const main = async () => {",
+													"    let userDetails = testData.getUserDetails();",
+													"    createUserRequest = {",
+													"        firstName: userDetails.firstName,",
+													"        email: userDetails.email",
+													"    };",
+													"",
+													"    pm.request.body.update({",
+													"        mode: 'raw',",
+													"        raw: JSON.stringify(createUserRequest),",
+													"        options: { raw: { language: 'json' } }",
+													"    });",
+													"};",
+													"",
+													"const interval = setInterval(() => {}, 1000);",
+													"",
+													"setTimeout(async () => ",
+													"    {",
+													"        try {",
+													"            await main();",
+													"        } catch (e) {",
+													"            console.error(e);",
+													"        } finally {",
+													"            clearInterval(interval);",
+													"        }",
+													"    },  ",
+													"    100 ",
+													");",
+													""
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										},
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test('Response status should be.400', () => {",
+													"    pm.response.to.be.badRequest;",
+													"});",
+													""
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/users",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"users"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Create user without email",
+									"event": [
+										{
+											"listen": "prerequest",
+											"script": {
+												"exec": [
+													"const testData = new TestData();",
+													"",
+													"const main = async () => {",
+													"    let userDetails = testData.getUserDetails();",
+													"    createUserRequest = {",
+													"        firstName: userDetails.firstName,",
+													"        lastNamr: userDetails.lastName",
+													"    };",
+													"",
+													"    pm.request.body.update({",
+													"        mode: 'raw',",
+													"        raw: JSON.stringify(createUserRequest),",
+													"        options: { raw: { language: 'json' } }",
+													"    });",
+													"};",
+													"",
+													"const interval = setInterval(() => {}, 1000);",
+													"",
+													"setTimeout(async () => ",
+													"    {",
+													"        try {",
+													"            await main();",
+													"        } catch (e) {",
+													"            console.error(e);",
+													"        } finally {",
+													"            clearInterval(interval);",
+													"        }",
+													"    },  ",
+													"    100 ",
+													");",
+													""
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										},
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test('Response status should be.400', () => {",
+													"    pm.response.to.be.badRequest;",
+													"});",
+													""
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/users",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"users"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "Field Format",
+							"item": [
+								{
+									"name": "Create user with empty first name",
+									"event": [
+										{
+											"listen": "prerequest",
+											"script": {
+												"exec": [
+													"const testData = new TestData();",
+													"",
+													"const main = async () => {",
+													"    let userDetails = testData.getUserDetails();",
+													"    userDetails['firstName'] = '';",
+													"",
+													"    pm.request.body.update({",
+													"        mode: 'raw',",
+													"        raw: JSON.stringify(userDetails),",
+													"        options: { raw: { language: 'json' } }",
+													"    });",
+													"};",
+													"",
+													"const interval = setInterval(() => {}, 1000);",
+													"",
+													"setTimeout(async () => ",
+													"    {",
+													"        try {",
+													"            await main();",
+													"        } catch (e) {",
+													"            console.error(e);",
+													"        } finally {",
+													"            clearInterval(interval);",
+													"        }",
+													"    },  ",
+													"    100 ",
+													");",
+													""
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										},
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test('Response status should be.400', () => {",
+													"    pm.response.to.be.badRequest;",
+													"});",
+													""
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/users",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"users"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Create user with blank first name",
+									"event": [
+										{
+											"listen": "prerequest",
+											"script": {
+												"exec": [
+													"const testData = new TestData();",
+													"",
+													"const main = async () => {",
+													"    let userDetails = testData.getUserDetails();",
+													"    userDetails['firstName'] = ' ';",
+													"",
+													"    pm.request.body.update({",
+													"        mode: 'raw',",
+													"        raw: JSON.stringify(userDetails),",
+													"        options: { raw: { language: 'json' } }",
+													"    });",
+													"};",
+													"",
+													"const interval = setInterval(() => {}, 1000);",
+													"",
+													"setTimeout(async () => ",
+													"    {",
+													"        try {",
+													"            await main();",
+													"        } catch (e) {",
+													"            console.error(e);",
+													"        } finally {",
+													"            clearInterval(interval);",
+													"        }",
+													"    },  ",
+													"    100 ",
+													");",
+													""
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										},
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test('Response status should be.400', () => {",
+													"    pm.response.to.be.badRequest;",
+													"});",
+													""
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/users",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"users"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Create user with first name longer 50 chars",
+									"event": [
+										{
+											"listen": "prerequest",
+											"script": {
+												"exec": [
+													"const testData = new TestData();",
+													"",
+													"const main = async () => {",
+													"    let userDetails = testData.getUserDetails();",
+													"    userDetails['firstName'] = testData.getRandomText(51);",
+													"",
+													"    pm.request.body.update({",
+													"        mode: 'raw',",
+													"        raw: JSON.stringify(userDetails),",
+													"        options: { raw: { language: 'json' } }",
+													"    });",
+													"};",
+													"",
+													"const interval = setInterval(() => {}, 1000);",
+													"",
+													"setTimeout(async () => ",
+													"    {",
+													"        try {",
+													"            await main();",
+													"        } catch (e) {",
+													"            console.error(e);",
+													"        } finally {",
+													"            clearInterval(interval);",
+													"        }",
+													"    },  ",
+													"    100 ",
+													");",
+													""
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										},
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test('Response status should be.400', () => {",
+													"    pm.response.to.be.badRequest;",
+													"});",
+													""
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/users",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"users"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Create user with first name 1 char long",
+									"event": [
+										{
+											"listen": "prerequest",
+											"script": {
+												"exec": [
+													"const testData = new TestData();",
+													"",
+													"const main = async () => {",
+													"    let userDetails = testData.getUserDetails();",
+													"    userDetails['firstName'] = testData.getRandomText(1);",
+													"",
+													"    pm.request.body.update({",
+													"        mode: 'raw',",
+													"        raw: JSON.stringify(userDetails),",
+													"        options: { raw: { language: 'json' } }",
+													"    });",
+													"};",
+													"",
+													"const interval = setInterval(() => {}, 1000);",
+													"",
+													"setTimeout(async () => ",
+													"    {",
+													"        try {",
+													"            await main();",
+													"        } catch (e) {",
+													"            console.error(e);",
+													"        } finally {",
+													"            clearInterval(interval);",
+													"        }",
+													"    },  ",
+													"    100 ",
+													");",
+													""
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										},
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test('Response status should be 200', () => {",
+													"    pm.response.to.be.ok;",
+													"});",
+													"",
+													"pm.test('Response should have a JSON body', () => {",
+													"    pm.response.to.be.withBody;",
+													"    pm.response.to.be.json;",
+													"});",
+													"",
+													"const source = JSON.parse(pm.request.body.raw);",
+													"const target = pm.response.json();",
+													"",
+													"pm.test('User should have required properties', () => {",
+													"    pm.expect(target).to.have.property('id');",
+													"    pm.expect(target).to.have.property('firstName');",
+													"    pm.expect(target).to.have.property('lastName');",
+													"    pm.expect(target).to.have.property('email');",
+													"    pm.expect(target).to.have.property('state');",
+													"    pm.expect(target).to.have.property('registrationDate');",
+													"});",
+													"",
+													"pm.test('User properties should have correct values', () => {",
+													"    pm.expect(target.id).to.be.not.null;",
+													"    pm.expect(target.firstName).equal(source.firstName);",
+													"    pm.expect(target.lastName).equal(source.lastName);",
+													"    pm.expect(target.email).equal(source.email);",
+													"    pm.expect(target.state).equal(\"ACTIVE\");",
+													"    pm.expect(target.registrationDate).to.be.not.null;",
+													"    pm.expect(Date.parse(target.registrationDate)).to.be.not.null;",
+													"});",
+													""
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/users",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"users"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Create user with first name 50 chars long",
+									"event": [
+										{
+											"listen": "prerequest",
+											"script": {
+												"exec": [
+													"const testData = new TestData();",
+													"",
+													"const main = async () => {",
+													"    let userDetails = testData.getUserDetails();",
+													"    userDetails['firstName'] = testData.getRandomText(50);",
+													"",
+													"    pm.request.body.update({",
+													"        mode: 'raw',",
+													"        raw: JSON.stringify(userDetails),",
+													"        options: { raw: { language: 'json' } }",
+													"    });",
+													"};",
+													"",
+													"const interval = setInterval(() => {}, 1000);",
+													"",
+													"setTimeout(async () => ",
+													"    {",
+													"        try {",
+													"            await main();",
+													"        } catch (e) {",
+													"            console.error(e);",
+													"        } finally {",
+													"            clearInterval(interval);",
+													"        }",
+													"    },  ",
+													"    100 ",
+													");",
+													""
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										},
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test('Response status should be 200', () => {",
+													"    pm.response.to.be.ok;",
+													"});",
+													"",
+													"pm.test('Response should have a JSON body', () => {",
+													"    pm.response.to.be.withBody;",
+													"    pm.response.to.be.json;",
+													"});",
+													"",
+													"const source = JSON.parse(pm.request.body.raw);",
+													"const target = pm.response.json();",
+													"",
+													"pm.test('User should have required properties', () => {",
+													"    pm.expect(target).to.have.property('id');",
+													"    pm.expect(target).to.have.property('firstName');",
+													"    pm.expect(target).to.have.property('lastName');",
+													"    pm.expect(target).to.have.property('email');",
+													"    pm.expect(target).to.have.property('state');",
+													"    pm.expect(target).to.have.property('registrationDate');",
+													"});",
+													"",
+													"pm.test('User properties should have correct values', () => {",
+													"    pm.expect(target.id).to.be.not.null;",
+													"    pm.expect(target.firstName).equal(source.firstName);",
+													"    pm.expect(target.lastName).equal(source.lastName);",
+													"    pm.expect(target.email).equal(source.email);",
+													"    pm.expect(target.state).equal(\"ACTIVE\");",
+													"    pm.expect(target.registrationDate).to.be.not.null;",
+													"    pm.expect(Date.parse(target.registrationDate)).to.be.not.null;",
+													"});",
+													""
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/users",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"users"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Create user with empty lasr name",
+									"event": [
+										{
+											"listen": "prerequest",
+											"script": {
+												"exec": [
+													"const testData = new TestData();",
+													"",
+													"const main = async () => {",
+													"    let userDetails = testData.getUserDetails();",
+													"    userDetails['lastName'] = '';",
+													"",
+													"    pm.request.body.update({",
+													"        mode: 'raw',",
+													"        raw: JSON.stringify(userDetails),",
+													"        options: { raw: { language: 'json' } }",
+													"    });",
+													"};",
+													"",
+													"const interval = setInterval(() => {}, 1000);",
+													"",
+													"setTimeout(async () => ",
+													"    {",
+													"        try {",
+													"            await main();",
+													"        } catch (e) {",
+													"            console.error(e);",
+													"        } finally {",
+													"            clearInterval(interval);",
+													"        }",
+													"    },  ",
+													"    100 ",
+													");",
+													""
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										},
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test('Response status should be.400', () => {",
+													"    pm.response.to.be.badRequest;",
+													"});",
+													""
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/users",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"users"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Create user with blank last name",
+									"event": [
+										{
+											"listen": "prerequest",
+											"script": {
+												"exec": [
+													"const testData = new TestData();",
+													"",
+													"const main = async () => {",
+													"    let userDetails = testData.getUserDetails();",
+													"    userDetails['lastName'] = ' ';",
+													"",
+													"    pm.request.body.update({",
+													"        mode: 'raw',",
+													"        raw: JSON.stringify(userDetails),",
+													"        options: { raw: { language: 'json' } }",
+													"    });",
+													"};",
+													"",
+													"const interval = setInterval(() => {}, 1000);",
+													"",
+													"setTimeout(async () => ",
+													"    {",
+													"        try {",
+													"            await main();",
+													"        } catch (e) {",
+													"            console.error(e);",
+													"        } finally {",
+													"            clearInterval(interval);",
+													"        }",
+													"    },  ",
+													"    100 ",
+													");",
+													""
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										},
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test('Response status should be.400', () => {",
+													"    pm.response.to.be.badRequest;",
+													"});",
+													""
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/users",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"users"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Create user with last name longer 50 chars",
+									"event": [
+										{
+											"listen": "prerequest",
+											"script": {
+												"exec": [
+													"const testData = new TestData();",
+													"",
+													"const main = async () => {",
+													"    let userDetails = testData.getUserDetails();",
+													"    userDetails['lastName'] = testData.getRandomText(51);",
+													"",
+													"    pm.request.body.update({",
+													"        mode: 'raw',",
+													"        raw: JSON.stringify(userDetails),",
+													"        options: { raw: { language: 'json' } }",
+													"    });",
+													"};",
+													"",
+													"const interval = setInterval(() => {}, 1000);",
+													"",
+													"setTimeout(async () => ",
+													"    {",
+													"        try {",
+													"            await main();",
+													"        } catch (e) {",
+													"            console.error(e);",
+													"        } finally {",
+													"            clearInterval(interval);",
+													"        }",
+													"    },  ",
+													"    100 ",
+													");",
+													""
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										},
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test('Response status should be.400', () => {",
+													"    pm.response.to.be.badRequest;",
+													"});",
+													""
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/users",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"users"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Create user with last name 1 char long",
+									"event": [
+										{
+											"listen": "prerequest",
+											"script": {
+												"exec": [
+													"const testData = new TestData();",
+													"",
+													"const main = async () => {",
+													"    let userDetails = testData.getUserDetails();",
+													"    userDetails['lastName'] = testData.getRandomText(1);",
+													"",
+													"    pm.request.body.update({",
+													"        mode: 'raw',",
+													"        raw: JSON.stringify(userDetails),",
+													"        options: { raw: { language: 'json' } }",
+													"    });",
+													"};",
+													"",
+													"const interval = setInterval(() => {}, 1000);",
+													"",
+													"setTimeout(async () => ",
+													"    {",
+													"        try {",
+													"            await main();",
+													"        } catch (e) {",
+													"            console.error(e);",
+													"        } finally {",
+													"            clearInterval(interval);",
+													"        }",
+													"    },  ",
+													"    100 ",
+													");",
+													""
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										},
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test('Response status should be 200', () => {",
+													"    pm.response.to.be.ok;",
+													"});",
+													"",
+													"pm.test('Response should have a JSON body', () => {",
+													"    pm.response.to.be.withBody;",
+													"    pm.response.to.be.json;",
+													"});",
+													"",
+													"const source = JSON.parse(pm.request.body.raw);",
+													"const target = pm.response.json();",
+													"",
+													"pm.test('User should have required properties', () => {",
+													"    pm.expect(target).to.have.property('id');",
+													"    pm.expect(target).to.have.property('firstName');",
+													"    pm.expect(target).to.have.property('lastName');",
+													"    pm.expect(target).to.have.property('email');",
+													"    pm.expect(target).to.have.property('state');",
+													"    pm.expect(target).to.have.property('registrationDate');",
+													"});",
+													"",
+													"pm.test('User properties should have correct values', () => {",
+													"    pm.expect(target.id).to.be.not.null;",
+													"    pm.expect(target.firstName).equal(source.firstName);",
+													"    pm.expect(target.lastName).equal(source.lastName);",
+													"    pm.expect(target.email).equal(source.email);",
+													"    pm.expect(target.state).equal(\"ACTIVE\");",
+													"    pm.expect(target.registrationDate).to.be.not.null;",
+													"    pm.expect(Date.parse(target.registrationDate)).to.be.not.null;",
+													"});",
+													""
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/users",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"users"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Create user with last name 50 chars long",
+									"event": [
+										{
+											"listen": "prerequest",
+											"script": {
+												"exec": [
+													"const testData = new TestData();",
+													"",
+													"const main = async () => {",
+													"    let userDetails = testData.getUserDetails();",
+													"    userDetails['lastName'] = testData.getRandomText(50);",
+													"",
+													"    pm.request.body.update({",
+													"        mode: 'raw',",
+													"        raw: JSON.stringify(userDetails),",
+													"        options: { raw: { language: 'json' } }",
+													"    });",
+													"};",
+													"",
+													"const interval = setInterval(() => {}, 1000);",
+													"",
+													"setTimeout(async () => ",
+													"    {",
+													"        try {",
+													"            await main();",
+													"        } catch (e) {",
+													"            console.error(e);",
+													"        } finally {",
+													"            clearInterval(interval);",
+													"        }",
+													"    },  ",
+													"    100 ",
+													");",
+													""
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										},
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test('Response status should be 200', () => {",
+													"    pm.response.to.be.ok;",
+													"});",
+													"",
+													"pm.test('Response should have a JSON body', () => {",
+													"    pm.response.to.be.withBody;",
+													"    pm.response.to.be.json;",
+													"});",
+													"",
+													"const source = JSON.parse(pm.request.body.raw);",
+													"const target = pm.response.json();",
+													"",
+													"pm.test('User should have required properties', () => {",
+													"    pm.expect(target).to.have.property('id');",
+													"    pm.expect(target).to.have.property('firstName');",
+													"    pm.expect(target).to.have.property('lastName');",
+													"    pm.expect(target).to.have.property('email');",
+													"    pm.expect(target).to.have.property('state');",
+													"    pm.expect(target).to.have.property('registrationDate');",
+													"});",
+													"",
+													"pm.test('User properties should have correct values', () => {",
+													"    pm.expect(target.id).to.be.not.null;",
+													"    pm.expect(target.firstName).equal(source.firstName);",
+													"    pm.expect(target.lastName).equal(source.lastName);",
+													"    pm.expect(target.email).equal(source.email);",
+													"    pm.expect(target.state).equal(\"ACTIVE\");",
+													"    pm.expect(target.registrationDate).to.be.not.null;",
+													"    pm.expect(Date.parse(target.registrationDate)).to.be.not.null;",
+													"});",
+													""
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/users",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"users"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Create user with empty email",
+									"event": [
+										{
+											"listen": "prerequest",
+											"script": {
+												"exec": [
+													"const testData = new TestData();",
+													"",
+													"const main = async () => {",
+													"    let userDetails = testData.getUserDetails();",
+													"    userDetails['email'] = '';",
+													"",
+													"    pm.request.body.update({",
+													"        mode: 'raw',",
+													"        raw: JSON.stringify(userDetails),",
+													"        options: { raw: { language: 'json' } }",
+													"    });",
+													"};",
+													"",
+													"const interval = setInterval(() => {}, 1000);",
+													"",
+													"setTimeout(async () => ",
+													"    {",
+													"        try {",
+													"            await main();",
+													"        } catch (e) {",
+													"            console.error(e);",
+													"        } finally {",
+													"            clearInterval(interval);",
+													"        }",
+													"    },  ",
+													"    100 ",
+													");",
+													""
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										},
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test('Response status should be.400', () => {",
+													"    pm.response.to.be.badRequest;",
+													"});",
+													""
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/users",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"users"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Create user with blank email",
+									"event": [
+										{
+											"listen": "prerequest",
+											"script": {
+												"exec": [
+													"const testData = new TestData();",
+													"",
+													"const main = async () => {",
+													"    let userDetails = testData.getUserDetails();",
+													"    userDetails['email'] = ' ';",
+													"",
+													"    pm.request.body.update({",
+													"        mode: 'raw',",
+													"        raw: JSON.stringify(userDetails),",
+													"        options: { raw: { language: 'json' } }",
+													"    });",
+													"};",
+													"",
+													"const interval = setInterval(() => {}, 1000);",
+													"",
+													"setTimeout(async () => ",
+													"    {",
+													"        try {",
+													"            await main();",
+													"        } catch (e) {",
+													"            console.error(e);",
+													"        } finally {",
+													"            clearInterval(interval);",
+													"        }",
+													"    },  ",
+													"    100 ",
+													");",
+													""
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										},
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test('Response status should be.400', () => {",
+													"    pm.response.to.be.badRequest;",
+													"});",
+													""
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/users",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"users"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Create user with malformed email",
+									"event": [
+										{
+											"listen": "prerequest",
+											"script": {
+												"exec": [
+													"const testData = new TestData();",
+													"",
+													"const main = async () => {",
+													"    let userDetails = testData.getUserDetails();",
+													"    userDetails['email'] = testData.getRandomText(50);",
+													"",
+													"    pm.request.body.update({",
+													"        mode: 'raw',",
+													"        raw: JSON.stringify(userDetails),",
+													"        options: { raw: { language: 'json' } }",
+													"    });",
+													"};",
+													"",
+													"const interval = setInterval(() => {}, 1000);",
+													"",
+													"setTimeout(async () => ",
+													"    {",
+													"        try {",
+													"            await main();",
+													"        } catch (e) {",
+													"            console.error(e);",
+													"        } finally {",
+													"            clearInterval(interval);",
+													"        }",
+													"    },  ",
+													"    100 ",
+													");",
+													""
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										},
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test('Response status should be.400', () => {",
+													"    pm.response.to.be.badRequest;",
+													"});",
+													""
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/users",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"users"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Change user's first name to empty",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test('Response status should be 400', () => {",
+													"    pm.response.to.be.badRequest;",
+													"});",
+													""
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										},
+										{
+											"listen": "prerequest",
+											"script": {
+												"exec": [
+													"const api = new API(pm);",
+													"const testData = new TestData();",
+													"",
+													"const main = async () => {",
+													"    let user = await api.createUser(testData.getUserDetails());",
+													"    pm.collectionVariables.set('userId', user.id);",
+													"    pm.collectionVariables.set('user', user);",
+													"    let patch = {",
+													"        firstName: ''",
+													"    }",
+													"",
+													"    pm.request.body.update({",
+													"        mode: 'raw',",
+													"        raw: JSON.stringify(patch),",
+													"        options: { raw: { language: 'json' } }",
+													"    });",
+													"};",
+													"",
+													"const interval = setInterval(() => {}, 1000);",
+													"",
+													"setTimeout(async () => ",
+													"    {",
+													"        try {",
+													"            await main();",
+													"        } catch (e) {",
+													"            console.error(e);",
+													"        } finally {",
+													"            clearInterval(interval);",
+													"        }",
+													"    },  ",
+													"    100 ",
+													");",
+													""
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"request": {
+										"method": "PATCH",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/users/{{userId}}",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"users",
+												"{{userId}}"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Change user's first name to blank",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test('Response status should be 400', () => {",
+													"    pm.response.to.be.badRequest;",
+													"});",
+													""
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										},
+										{
+											"listen": "prerequest",
+											"script": {
+												"exec": [
+													"const api = new API(pm);",
+													"const testData = new TestData();",
+													"",
+													"const main = async () => {",
+													"    let user = await api.createUser(testData.getUserDetails());",
+													"    pm.collectionVariables.set('userId', user.id);",
+													"    pm.collectionVariables.set('user', user);",
+													"    let patch = {",
+													"        firstName: ' '",
+													"    }",
+													"",
+													"    pm.request.body.update({",
+													"        mode: 'raw',",
+													"        raw: JSON.stringify(patch),",
+													"        options: { raw: { language: 'json' } }",
+													"    });",
+													"};",
+													"",
+													"const interval = setInterval(() => {}, 1000);",
+													"",
+													"setTimeout(async () => ",
+													"    {",
+													"        try {",
+													"            await main();",
+													"        } catch (e) {",
+													"            console.error(e);",
+													"        } finally {",
+													"            clearInterval(interval);",
+													"        }",
+													"    },  ",
+													"    100 ",
+													");",
+													""
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"request": {
+										"method": "PATCH",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/users/{{userId}}",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"users",
+												"{{userId}}"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Change user's first name to longer than 50 chars",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test('Response status should be 400', () => {",
+													"    pm.response.to.be.badRequest;",
+													"});",
+													""
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										},
+										{
+											"listen": "prerequest",
+											"script": {
+												"exec": [
+													"const api = new API(pm);",
+													"const testData = new TestData();",
+													"",
+													"const main = async () => {",
+													"    let user = await api.createUser(testData.getUserDetails());",
+													"    pm.collectionVariables.set('userId', user.id);",
+													"    pm.collectionVariables.set('user', user);",
+													"    let patch = {",
+													"        firstName: testData.getRandomText(51)",
+													"    }",
+													"",
+													"    pm.request.body.update({",
+													"        mode: 'raw',",
+													"        raw: JSON.stringify(patch),",
+													"        options: { raw: { language: 'json' } }",
+													"    });",
+													"};",
+													"",
+													"const interval = setInterval(() => {}, 1000);",
+													"",
+													"setTimeout(async () => ",
+													"    {",
+													"        try {",
+													"            await main();",
+													"        } catch (e) {",
+													"            console.error(e);",
+													"        } finally {",
+													"            clearInterval(interval);",
+													"        }",
+													"    },  ",
+													"    100 ",
+													");",
+													""
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"request": {
+										"method": "PATCH",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/users/{{userId}}",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"users",
+												"{{userId}}"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Change user's first name to 1 char long",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test('Response status should be 200', () => {",
+													"    pm.response.to.be.ok;",
+													"});",
+													"",
+													"pm.test('Response should have a JSON body', () => {",
+													"    pm.response.to.be.withBody;",
+													"    pm.response.to.be.json;",
+													"});",
+													"",
+													"const source = pm.collectionVariables.get('user');",
+													"const patch = JSON.parse(pm.request.body.raw);",
+													"const target = pm.response.json();",
+													"",
+													"pm.test('User properties should have correct values', () => {",
+													"    pm.expect(target).to.have.property('id');",
+													"    pm.expect(target).to.have.property('firstName');",
+													"    pm.expect(target).to.have.property('lastName');",
+													"    pm.expect(target).to.have.property('email');",
+													"    pm.expect(target).to.have.property('state');",
+													"    pm.expect(target).to.have.property('registrationDate');",
+													"    pm.expect(target.id).equal(source.id);",
+													"    pm.expect(target.firstName).equal(patch.firstName);",
+													"    pm.expect(target.lastName).equal(source.lastName);",
+													"    pm.expect(target.email).equal(source.email);",
+													"    pm.expect(target.state).equal(source.state);",
+													"    pm.expect(target.registrationDate).equal(source.registrationDate);",
+													"});",
+													""
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										},
+										{
+											"listen": "prerequest",
+											"script": {
+												"exec": [
+													"const api = new API(pm);",
+													"const testData = new TestData();",
+													"",
+													"const main = async () => {",
+													"    let user = await api.createUser(testData.getUserDetails());",
+													"    pm.collectionVariables.set('userId', user.id);",
+													"    pm.collectionVariables.set('user', user);",
+													"    let patch = {",
+													"        firstName: testData.getRandomText(1)",
+													"    }",
+													"",
+													"    pm.request.body.update({",
+													"        mode: 'raw',",
+													"        raw: JSON.stringify(patch),",
+													"        options: { raw: { language: 'json' } }",
+													"    });",
+													"};",
+													"",
+													"const interval = setInterval(() => {}, 1000);",
+													"",
+													"setTimeout(async () => ",
+													"    {",
+													"        try {",
+													"            await main();",
+													"        } catch (e) {",
+													"            console.error(e);",
+													"        } finally {",
+													"            clearInterval(interval);",
+													"        }",
+													"    },  ",
+													"    100 ",
+													");",
+													""
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"request": {
+										"method": "PATCH",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/users/{{userId}}",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"users",
+												"{{userId}}"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Change user's first name to 50 chars long",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test('Response status should be 200', () => {",
+													"    pm.response.to.be.ok;",
+													"});",
+													"",
+													"pm.test('Response should have a JSON body', () => {",
+													"    pm.response.to.be.withBody;",
+													"    pm.response.to.be.json;",
+													"});",
+													"",
+													"const source = pm.collectionVariables.get('user');",
+													"const patch = JSON.parse(pm.request.body.raw);",
+													"const target = pm.response.json();",
+													"",
+													"pm.test('User properties should have correct values', () => {",
+													"    pm.expect(target).to.have.property('id');",
+													"    pm.expect(target).to.have.property('firstName');",
+													"    pm.expect(target).to.have.property('lastName');",
+													"    pm.expect(target).to.have.property('email');",
+													"    pm.expect(target).to.have.property('state');",
+													"    pm.expect(target).to.have.property('registrationDate');",
+													"    pm.expect(target.id).equal(source.id);",
+													"    pm.expect(target.firstName).equal(patch.firstName);",
+													"    pm.expect(target.lastName).equal(source.lastName);",
+													"    pm.expect(target.email).equal(source.email);",
+													"    pm.expect(target.state).equal(source.state);",
+													"    pm.expect(target.registrationDate).equal(source.registrationDate);",
+													"});",
+													""
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										},
+										{
+											"listen": "prerequest",
+											"script": {
+												"exec": [
+													"const api = new API(pm);",
+													"const testData = new TestData();",
+													"",
+													"const main = async () => {",
+													"    let user = await api.createUser(testData.getUserDetails());",
+													"    pm.collectionVariables.set('userId', user.id);",
+													"    pm.collectionVariables.set('user', user);",
+													"    let patch = {",
+													"        firstName: testData.getRandomText(50)",
+													"    }",
+													"",
+													"    pm.request.body.update({",
+													"        mode: 'raw',",
+													"        raw: JSON.stringify(patch),",
+													"        options: { raw: { language: 'json' } }",
+													"    });",
+													"};",
+													"",
+													"const interval = setInterval(() => {}, 1000);",
+													"",
+													"setTimeout(async () => ",
+													"    {",
+													"        try {",
+													"            await main();",
+													"        } catch (e) {",
+													"            console.error(e);",
+													"        } finally {",
+													"            clearInterval(interval);",
+													"        }",
+													"    },  ",
+													"    100 ",
+													");",
+													""
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"request": {
+										"method": "PATCH",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/users/{{userId}}",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"users",
+												"{{userId}}"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Change user's last name to empty",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test('Response status should be 400', () => {",
+													"    pm.response.to.be.badRequest;",
+													"});",
+													""
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										},
+										{
+											"listen": "prerequest",
+											"script": {
+												"exec": [
+													"const api = new API(pm);",
+													"const testData = new TestData();",
+													"",
+													"const main = async () => {",
+													"    let user = await api.createUser(testData.getUserDetails());",
+													"    pm.collectionVariables.set('userId', user.id);",
+													"    pm.collectionVariables.set('user', user);",
+													"    let patch = {",
+													"        lastName: ''",
+													"    }",
+													"",
+													"    pm.request.body.update({",
+													"        mode: 'raw',",
+													"        raw: JSON.stringify(patch),",
+													"        options: { raw: { language: 'json' } }",
+													"    });",
+													"};",
+													"",
+													"const interval = setInterval(() => {}, 1000);",
+													"",
+													"setTimeout(async () => ",
+													"    {",
+													"        try {",
+													"            await main();",
+													"        } catch (e) {",
+													"            console.error(e);",
+													"        } finally {",
+													"            clearInterval(interval);",
+													"        }",
+													"    },  ",
+													"    100 ",
+													");",
+													""
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"request": {
+										"method": "PATCH",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/users/{{userId}}",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"users",
+												"{{userId}}"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Change user's last name to blank",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test('Response status should be 400', () => {",
+													"    pm.response.to.be.badRequest;",
+													"});",
+													""
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										},
+										{
+											"listen": "prerequest",
+											"script": {
+												"exec": [
+													"const api = new API(pm);",
+													"const testData = new TestData();",
+													"",
+													"const main = async () => {",
+													"    let user = await api.createUser(testData.getUserDetails());",
+													"    pm.collectionVariables.set('userId', user.id);",
+													"    pm.collectionVariables.set('user', user);",
+													"    let patch = {",
+													"        lastName: ' '",
+													"    }",
+													"",
+													"    pm.request.body.update({",
+													"        mode: 'raw',",
+													"        raw: JSON.stringify(patch),",
+													"        options: { raw: { language: 'json' } }",
+													"    });",
+													"};",
+													"",
+													"const interval = setInterval(() => {}, 1000);",
+													"",
+													"setTimeout(async () => ",
+													"    {",
+													"        try {",
+													"            await main();",
+													"        } catch (e) {",
+													"            console.error(e);",
+													"        } finally {",
+													"            clearInterval(interval);",
+													"        }",
+													"    },  ",
+													"    100 ",
+													");",
+													""
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"request": {
+										"method": "PATCH",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/users/{{userId}}",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"users",
+												"{{userId}}"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Change user's last name to longer than 50 chars",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test('Response status should be 400', () => {",
+													"    pm.response.to.be.badRequest;",
+													"});",
+													""
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										},
+										{
+											"listen": "prerequest",
+											"script": {
+												"exec": [
+													"const api = new API(pm);",
+													"const testData = new TestData();",
+													"",
+													"const main = async () => {",
+													"    let user = await api.createUser(testData.getUserDetails());",
+													"    pm.collectionVariables.set('userId', user.id);",
+													"    pm.collectionVariables.set('user', user);",
+													"    let patch = {",
+													"        lastName: testData.getRandomText(51)",
+													"    }",
+													"",
+													"    pm.request.body.update({",
+													"        mode: 'raw',",
+													"        raw: JSON.stringify(patch),",
+													"        options: { raw: { language: 'json' } }",
+													"    });",
+													"};",
+													"",
+													"const interval = setInterval(() => {}, 1000);",
+													"",
+													"setTimeout(async () => ",
+													"    {",
+													"        try {",
+													"            await main();",
+													"        } catch (e) {",
+													"            console.error(e);",
+													"        } finally {",
+													"            clearInterval(interval);",
+													"        }",
+													"    },  ",
+													"    100 ",
+													");",
+													""
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"request": {
+										"method": "PATCH",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/users/{{userId}}",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"users",
+												"{{userId}}"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Change user's last name to 1 char long",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test('Response status should be 200', () => {",
+													"    pm.response.to.be.ok;",
+													"});",
+													"",
+													"pm.test('Response should have a JSON body', () => {",
+													"    pm.response.to.be.withBody;",
+													"    pm.response.to.be.json;",
+													"});",
+													"",
+													"const source = pm.collectionVariables.get('user');",
+													"const patch = JSON.parse(pm.request.body.raw);",
+													"const target = pm.response.json();",
+													"",
+													"pm.test('User properties should have correct values', () => {",
+													"    pm.expect(target).to.have.property('id');",
+													"    pm.expect(target).to.have.property('firstName');",
+													"    pm.expect(target).to.have.property('lastName');",
+													"    pm.expect(target).to.have.property('email');",
+													"    pm.expect(target).to.have.property('state');",
+													"    pm.expect(target).to.have.property('registrationDate');",
+													"    pm.expect(target.id).equal(source.id);",
+													"    pm.expect(target.firstName).equal(source.firstName);",
+													"    pm.expect(target.lastName).equal(patch.lastName);",
+													"    pm.expect(target.email).equal(source.email);",
+													"    pm.expect(target.state).equal(source.state);",
+													"    pm.expect(target.registrationDate).equal(source.registrationDate);",
+													"});",
+													""
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										},
+										{
+											"listen": "prerequest",
+											"script": {
+												"exec": [
+													"const api = new API(pm);",
+													"const testData = new TestData();",
+													"",
+													"const main = async () => {",
+													"    let user = await api.createUser(testData.getUserDetails());",
+													"    pm.collectionVariables.set('userId', user.id);",
+													"    pm.collectionVariables.set('user', user);",
+													"    let patch = {",
+													"        lastName: testData.getRandomText(1)",
+													"    }",
+													"",
+													"    pm.request.body.update({",
+													"        mode: 'raw',",
+													"        raw: JSON.stringify(patch),",
+													"        options: { raw: { language: 'json' } }",
+													"    });",
+													"};",
+													"",
+													"const interval = setInterval(() => {}, 1000);",
+													"",
+													"setTimeout(async () => ",
+													"    {",
+													"        try {",
+													"            await main();",
+													"        } catch (e) {",
+													"            console.error(e);",
+													"        } finally {",
+													"            clearInterval(interval);",
+													"        }",
+													"    },  ",
+													"    100 ",
+													");",
+													""
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"request": {
+										"method": "PATCH",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/users/{{userId}}",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"users",
+												"{{userId}}"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Change user's last name to 50 chars long",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test('Response status should be 200', () => {",
+													"    pm.response.to.be.ok;",
+													"});",
+													"",
+													"pm.test('Response should have a JSON body', () => {",
+													"    pm.response.to.be.withBody;",
+													"    pm.response.to.be.json;",
+													"});",
+													"",
+													"const source = pm.collectionVariables.get('user');",
+													"const patch = JSON.parse(pm.request.body.raw);",
+													"const target = pm.response.json();",
+													"",
+													"pm.test('User properties should have correct values', () => {",
+													"    pm.expect(target).to.have.property('id');",
+													"    pm.expect(target).to.have.property('firstName');",
+													"    pm.expect(target).to.have.property('lastName');",
+													"    pm.expect(target).to.have.property('email');",
+													"    pm.expect(target).to.have.property('state');",
+													"    pm.expect(target).to.have.property('registrationDate');",
+													"    pm.expect(target.id).equal(source.id);",
+													"    pm.expect(target.firstName).equal(source.firstName);",
+													"    pm.expect(target.lastName).equal(patch.lastName);",
+													"    pm.expect(target.email).equal(source.email);",
+													"    pm.expect(target.state).equal(source.state);",
+													"    pm.expect(target.registrationDate).equal(source.registrationDate);",
+													"});",
+													""
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										},
+										{
+											"listen": "prerequest",
+											"script": {
+												"exec": [
+													"const api = new API(pm);",
+													"const testData = new TestData();",
+													"",
+													"const main = async () => {",
+													"    let user = await api.createUser(testData.getUserDetails());",
+													"    pm.collectionVariables.set('userId', user.id);",
+													"    pm.collectionVariables.set('user', user);",
+													"    let patch = {",
+													"        lastName: testData.getRandomText(50)",
+													"    }",
+													"",
+													"    pm.request.body.update({",
+													"        mode: 'raw',",
+													"        raw: JSON.stringify(patch),",
+													"        options: { raw: { language: 'json' } }",
+													"    });",
+													"};",
+													"",
+													"const interval = setInterval(() => {}, 1000);",
+													"",
+													"setTimeout(async () => ",
+													"    {",
+													"        try {",
+													"            await main();",
+													"        } catch (e) {",
+													"            console.error(e);",
+													"        } finally {",
+													"            clearInterval(interval);",
+													"        }",
+													"    },  ",
+													"    100 ",
+													");",
+													""
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"request": {
+										"method": "PATCH",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/users/{{userId}}",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"users",
+												"{{userId}}"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Change user's email to empty",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test('Response status should be 400', () => {",
+													"    pm.response.to.be.badRequest;",
+													"});",
+													""
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										},
+										{
+											"listen": "prerequest",
+											"script": {
+												"exec": [
+													"const api = new API(pm);",
+													"const testData = new TestData();",
+													"",
+													"const main = async () => {",
+													"    let user = await api.createUser(testData.getUserDetails());",
+													"    pm.collectionVariables.set('userId', user.id);",
+													"    pm.collectionVariables.set('user', user);",
+													"    let patch = {",
+													"        email: ''",
+													"    }",
+													"",
+													"    pm.request.body.update({",
+													"        mode: 'raw',",
+													"        raw: JSON.stringify(patch),",
+													"        options: { raw: { language: 'json' } }",
+													"    });",
+													"};",
+													"",
+													"const interval = setInterval(() => {}, 1000);",
+													"",
+													"setTimeout(async () => ",
+													"    {",
+													"        try {",
+													"            await main();",
+													"        } catch (e) {",
+													"            console.error(e);",
+													"        } finally {",
+													"            clearInterval(interval);",
+													"        }",
+													"    },  ",
+													"    100 ",
+													");",
+													""
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"request": {
+										"method": "PATCH",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/users/{{userId}}",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"users",
+												"{{userId}}"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Change user's email to blank",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test('Response status should be 400', () => {",
+													"    pm.response.to.be.badRequest;",
+													"});",
+													""
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										},
+										{
+											"listen": "prerequest",
+											"script": {
+												"exec": [
+													"const api = new API(pm);",
+													"const testData = new TestData();",
+													"",
+													"const main = async () => {",
+													"    let user = await api.createUser(testData.getUserDetails());",
+													"    pm.collectionVariables.set('userId', user.id);",
+													"    pm.collectionVariables.set('user', user);",
+													"    let patch = {",
+													"        email: ' '",
+													"    }",
+													"",
+													"    pm.request.body.update({",
+													"        mode: 'raw',",
+													"        raw: JSON.stringify(patch),",
+													"        options: { raw: { language: 'json' } }",
+													"    });",
+													"};",
+													"",
+													"const interval = setInterval(() => {}, 1000);",
+													"",
+													"setTimeout(async () => ",
+													"    {",
+													"        try {",
+													"            await main();",
+													"        } catch (e) {",
+													"            console.error(e);",
+													"        } finally {",
+													"            clearInterval(interval);",
+													"        }",
+													"    },  ",
+													"    100 ",
+													");",
+													""
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"request": {
+										"method": "PATCH",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/users/{{userId}}",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"users",
+												"{{userId}}"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Change user's email to malformed",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test('Response status should be 400', () => {",
+													"    pm.response.to.be.badRequest;",
+													"});",
+													""
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										},
+										{
+											"listen": "prerequest",
+											"script": {
+												"exec": [
+													"const api = new API(pm);",
+													"const testData = new TestData();",
+													"",
+													"const main = async () => {",
+													"    let user = await api.createUser(testData.getUserDetails());",
+													"    pm.collectionVariables.set('userId', user.id);",
+													"    pm.collectionVariables.set('user', user);",
+													"    let patch = {",
+													"        email: testData.getRandomText(50)",
+													"    }",
+													"",
+													"    pm.request.body.update({",
+													"        mode: 'raw',",
+													"        raw: JSON.stringify(patch),",
+													"        options: { raw: { language: 'json' } }",
+													"    });",
+													"};",
+													"",
+													"const interval = setInterval(() => {}, 1000);",
+													"",
+													"setTimeout(async () => ",
+													"    {",
+													"        try {",
+													"            await main();",
+													"        } catch (e) {",
+													"            console.error(e);",
+													"        } finally {",
+													"            clearInterval(interval);",
+													"        }",
+													"    },  ",
+													"    100 ",
+													");",
+													""
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"request": {
+										"method": "PATCH",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/users/{{userId}}",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"users",
+												"{{userId}}"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Change user's state to not existing",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test('Response status should be 400', () => {",
+													"    pm.response.to.be.badRequest;",
+													"});",
+													""
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										},
+										{
+											"listen": "prerequest",
+											"script": {
+												"exec": [
+													"const api = new API(pm);",
+													"const testData = new TestData();",
+													"",
+													"const main = async () => {",
+													"    let user = await api.createUser(testData.getUserDetails());",
+													"    pm.collectionVariables.set('userId', user.id);",
+													"    pm.collectionVariables.set('user', user);",
+													"    let patch = {",
+													"        state: 'NOT_EXISTING_STATE'",
+													"    }",
+													"",
+													"    pm.request.body.update({",
+													"        mode: 'raw',",
+													"        raw: JSON.stringify(patch),",
+													"        options: { raw: { language: 'json' } }",
+													"    });",
+													"};",
+													"",
+													"const interval = setInterval(() => {}, 1000);",
+													"",
+													"setTimeout(async () => ",
+													"    {",
+													"        try {",
+													"            await main();",
+													"        } catch (e) {",
+													"            console.error(e);",
+													"        } finally {",
+													"            clearInterval(interval);",
+													"        }",
+													"    },  ",
+													"    100 ",
+													");",
+													""
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"request": {
+										"method": "PATCH",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/users/{{userId}}",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"users",
+												"{{userId}}"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "Not found",
+					"item": [
+						{
+							"name": "Find user by not existing id",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"const api = new API(pm);",
+											"const testData = new TestData();",
+											"",
+											"const main = async () => {",
+											"    pm.collectionVariables.set('userId', testData.getRandomUUID());",
+											"};",
+											"",
+											"const interval = setInterval(() => {}, 1000);",
+											"",
+											"setTimeout(async () => ",
+											"    {",
+											"        try {",
+											"            await main();",
+											"        } catch (e) {",
+											"            console.error(e);",
+											"        } finally {",
+											"            clearInterval(interval);",
+											"        }",
+											"    },  ",
+											"    100 ",
+											");",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Response status should be 404', () => {",
+											"    pm.response.to.have.status(404);",
+											"});",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/users/{{userId}}",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"users",
+										"{{userId}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Change user's details for not existing user",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Response status should be 404', () => {",
+											"    pm.response.to.have.status(404);",
+											"});",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"const api = new API(pm);",
+											"const testData = new TestData();",
+											"",
+											"const main = async () => {",
+											"    let patch = testData.getUserDetails();",
+											"    patch['state'] = 'BLOCKED';",
+											"",
+											"    pm.request.body.update({",
+											"        mode: 'raw',",
+											"        raw: JSON.stringify(patch),",
+											"        options: { raw: { language: 'json' } }",
+											"    });",
+											"    pm.collectionVariables.set('userId', testData.getRandomUUID());",
+											"};",
+											"",
+											"const interval = setInterval(() => {}, 1000);",
+											"",
+											"setTimeout(async () => ",
+											"    {",
+											"        try {",
+											"            await main();",
+											"        } catch (e) {",
+											"            console.error(e);",
+											"        } finally {",
+											"            clearInterval(interval);",
+											"        }",
+											"    },  ",
+											"    100 ",
+											");",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/users/{{userId}}",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"users",
+										"{{userId}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete not existing user",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Response status should be 404', () => {",
+											"    pm.response.to.have.status(404);",
+											"});",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"const api = new API(pm);",
+											"const testData = new TestData();",
+											"",
+											"const main = async () => {",
+											"    pm.collectionVariables.set('userId', testData.getRandomUUID());",
+											"};",
+											"",
+											"const interval = setInterval(() => {}, 1000);",
+											"",
+											"setTimeout(async () => ",
+											"    {",
+											"        try {",
+											"            await main();",
+											"        } catch (e) {",
+											"            console.error(e);",
+											"        } finally {",
+											"            clearInterval(interval);",
+											"        }",
+											"    },  ",
+											"    100 ",
+											");",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/users/{{userId}}",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"users",
+										"{{userId}}"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Data Conflict",
+					"item": [
+						{
+							"name": "Create user with existing email",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Response status should be 409', () => {",
+											"    pm.response.to.have.status(409);",
+											"});",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"const api = new API(pm);",
+											"const testData = new TestData();",
+											"",
+											"const main = async () => {",
+											"    let user = await api.createUser(testData.getUserDetails());",
+											"    pm.collectionVariables.set('userId', user.id);",
+											"    pm.collectionVariables.set('user', user);",
+											"    let userDetails = testData.getUserDetails();",
+											"    userDetails['email'] = user.email;",
+											"",
+											"    pm.request.body.update({",
+											"        mode: 'raw',",
+											"        raw: JSON.stringify(userDetails),",
+											"        options: { raw: { language: 'json' } }",
+											"    });",
+											"};",
+											"",
+											"const interval = setInterval(() => {}, 1000);",
+											"",
+											"setTimeout(async () => ",
+											"    {",
+											"        try {",
+											"            await main();",
+											"        } catch (e) {",
+											"            console.error(e);",
+											"        } finally {",
+											"            clearInterval(interval);",
+											"        }",
+											"    },  ",
+											"    100 ",
+											");",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/users",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"users"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Change user's email to another user's one",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Response status should be 409', () => {",
+											"    pm.response.to.have.status(409);",
+											"});",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"const api = new API(pm);",
+											"const testData = new TestData();",
+											"",
+											"const main = async () => {",
+											"    let existingUser = await api.createUser(testData.getUserDetails());",
+											"    let user = await api.createUser(testData.getUserDetails());",
+											"    pm.collectionVariables.set('userId', user.id);",
+											"    pm.collectionVariables.set('user', user);",
+											"    let patch = {",
+											"        email: existingUser.email",
+											"    }",
+											"",
+											"    pm.request.body.update({",
+											"        mode: 'raw',",
+											"        raw: JSON.stringify(patch),",
+											"        options: { raw: { language: 'json' } }",
+											"    });",
+											"};",
+											"",
+											"const interval = setInterval(() => {}, 1000);",
+											"",
+											"setTimeout(async () => ",
+											"    {",
+											"        try {",
+											"            await main();",
+											"        } catch (e) {",
+											"            console.error(e);",
+											"        } finally {",
+											"            clearInterval(interval);",
+											"        }",
+											"    },  ",
+											"    100 ",
+											");",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/users/{{userId}}",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"users",
+										"{{userId}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Change user's details for deleted user",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Response status should be 409', () => {",
+											"    pm.response.to.have.status(409);",
+											"});",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"const api = new API(pm);",
+											"const testData = new TestData();",
+											"",
+											"const main = async () => {",
+											"    let user = await api.createUser(testData.getUserDetails());",
+											"    pm.collectionVariables.set('userId', user.id);",
+											"    pm.collectionVariables.set('user', user);",
+											"    await api.deleteUserById(user.id);",
+											"    let patch = testData.getUserDetails();",
+											"    patch['state'] = 'BLOCKED';",
+											"",
+											"    pm.request.body.update({",
+											"        mode: 'raw',",
+											"        raw: JSON.stringify(patch),",
+											"        options: { raw: { language: 'json' } }",
+											"    });",
+											"};",
+											"",
+											"const interval = setInterval(() => {}, 1000);",
+											"",
+											"setTimeout(async () => ",
+											"    {",
+											"        try {",
+											"            await main();",
+											"        } catch (e) {",
+											"            console.error(e);",
+											"        } finally {",
+											"            clearInterval(interval);",
+											"        }",
+											"    },  ",
+											"    100 ",
+											");",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/users/{{userId}}",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"users",
+										"{{userId}}"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Create user",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"const testData = new TestData();",
+									"",
+									"const main = async () => {",
+									"    let createUserRequest = testData.getUserDetails();",
+									"",
+									"    pm.request.body.update({",
+									"        mode: 'raw',",
+									"        raw: JSON.stringify(createUserRequest),",
+									"        options: { raw: { language: 'json' } }",
+									"    });",
+									"};",
+									"",
+									"const interval = setInterval(() => {}, 1000);",
+									"",
+									"setTimeout(async () => ",
+									"    {",
+									"        try {",
+									"            await main();",
+									"        } catch (e) {",
+									"            console.error(e);",
+									"        } finally {",
+									"            clearInterval(interval);",
+									"        }",
+									"    },  ",
+									"    100 ",
+									");",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Response status should be 200', () => {",
+									"    pm.response.to.be.ok;",
+									"});",
+									"",
+									"pm.test('Response should have a JSON body', () => {",
+									"    pm.response.to.be.withBody;",
+									"    pm.response.to.be.json;",
+									"});",
+									"",
+									"const source = JSON.parse(pm.request.body.raw);",
+									"const target = pm.response.json();",
+									"",
+									"pm.test('User should have required properties', () => {",
+									"    pm.expect(target).to.have.property('id');",
+									"    pm.expect(target).to.have.property('firstName');",
+									"    pm.expect(target).to.have.property('lastName');",
+									"    pm.expect(target).to.have.property('email');",
+									"    pm.expect(target).to.have.property('state');",
+									"    pm.expect(target).to.have.property('registrationDate');",
+									"});",
+									"",
+									"pm.test('User properties should have correct values', () => {",
+									"    pm.expect(target.id).to.be.not.null;",
+									"    pm.expect(target.firstName).equal(source.firstName);",
+									"    pm.expect(target.lastName).equal(source.lastName);",
+									"    pm.expect(target.email).equal(source.email);",
+									"    pm.expect(target.state).equal(\"ACTIVE\");",
+									"    pm.expect(target.registrationDate).to.be.not.null;",
+									"    pm.expect(Date.parse(target.registrationDate)).to.be.not.null;",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/users",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get all users",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"const api = new API(pm);",
+									"const testData = new TestData();",
+									"",
+									"const main = async () => {",
+									"    let user = await api.createUser(testData.getUserDetails());",
+									"    pm.collectionVariables.set('user', user);",
+									"};",
+									"",
+									"const interval = setInterval(() => {}, 1000);",
+									"",
+									"setTimeout(async () => ",
+									"    {",
+									"        try {",
+									"            await main();",
+									"        } catch (e) {",
+									"            console.error(e);",
+									"        } finally {",
+									"            clearInterval(interval);",
+									"        }",
+									"    },  ",
+									"    100 ",
+									");",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Response status should be 200', () => {",
+									"    pm.response.to.be.ok;",
+									"});",
+									"",
+									"let users;",
+									"pm.test('Response body should be a JSON array', () => {",
+									"    pm.response.to.be.withBody;",
+									"    pm.response.to.be.json;",
+									"    users = pm.response.json();",
+									"    pm.expect(users).to.be.a('array');",
+									"});",
+									"",
+									"const source = pm.collectionVariables.get('user');",
+									"const target = users.find(user => user.id === source.id);",
+									"",
+									"pm.test('JSON array should contain recentlry added element', () => {",
+									"    pm.expect(target).to.be.not.null;",
+									"    pm.expect(target).to.have.property('id');",
+									"    pm.expect(target).to.have.property('firstName');",
+									"    pm.expect(target).to.have.property('lastName');",
+									"    pm.expect(target).to.have.property('email');",
+									"    pm.expect(target).to.have.property('state');",
+									"    pm.expect(target).to.have.property('registrationDate');",
+									"    pm.expect(target.id).equal(source.id);",
+									"    pm.expect(target.firstName).equal(source.firstName);",
+									"    pm.expect(target.lastName).equal(source.lastName);",
+									"    pm.expect(target.email).equal(source.email);",
+									"    pm.expect(target.state).equal(\"ACTIVE\");",
+									"    pm.expect(target.registrationDate).equal(source.registrationDate);",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/users",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Find user by id",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"const api = new API(pm);",
+									"const testData = new TestData();",
+									"",
+									"const main = async () => {",
+									"    let user = await api.createUser(testData.getUserDetails());",
+									"    pm.collectionVariables.set('userId', user.id);",
+									"    pm.collectionVariables.set('user', user);",
+									"};",
+									"",
+									"const interval = setInterval(() => {}, 1000);",
+									"",
+									"setTimeout(async () => ",
+									"    {",
+									"        try {",
+									"            await main();",
+									"        } catch (e) {",
+									"            console.error(e);",
+									"        } finally {",
+									"            clearInterval(interval);",
+									"        }",
+									"    },  ",
+									"    100 ",
+									");",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Response status should be 200', () => {",
+									"    pm.response.to.be.ok;",
+									"});",
+									"",
+									"pm.test('Response should have a JSON body', () => {",
+									"    pm.response.to.be.withBody;",
+									"    pm.response.to.be.json;",
+									"});",
+									"",
+									"const source = pm.collectionVariables.get('user');",
+									"const target = pm.response.json();",
+									"",
+									"pm.test('User should have required properties', () => {",
+									"    pm.expect(target).to.have.property('id');",
+									"    pm.expect(target).to.have.property('firstName');",
+									"    pm.expect(target).to.have.property('lastName');",
+									"    pm.expect(target).to.have.property('email');",
+									"    pm.expect(target).to.have.property('state');",
+									"    pm.expect(target).to.have.property('registrationDate');",
+									"});",
+									"",
+									"pm.test('User properties should have correct values', () => {",
+									"    pm.expect(target.id).equal(source.id);",
+									"    pm.expect(target.firstName).equal(source.firstName);",
+									"    pm.expect(target.lastName).equal(source.lastName);",
+									"    pm.expect(target.email).equal(source.email);",
+									"    pm.expect(target.state).equal(\"ACTIVE\");",
+									"    pm.expect(target.registrationDate).equal(source.registrationDate);",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/users/{{userId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"users",
+								"{{userId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Change all user's details and state",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Response status should be 200', () => {",
+									"    pm.response.to.be.ok;",
+									"});",
+									"",
+									"pm.test('Response should have a JSON body', () => {",
+									"    pm.response.to.be.withBody;",
+									"    pm.response.to.be.json;",
+									"});",
+									"",
+									"const source = pm.collectionVariables.get('user');",
+									"const patch = JSON.parse(pm.request.body.raw);",
+									"const target = pm.response.json();",
+									"",
+									"pm.test('User properties should have correct values', () => {",
+									"    pm.expect(target).to.have.property('id');",
+									"    pm.expect(target).to.have.property('firstName');",
+									"    pm.expect(target).to.have.property('lastName');",
+									"    pm.expect(target).to.have.property('email');",
+									"    pm.expect(target).to.have.property('state');",
+									"    pm.expect(target).to.have.property('registrationDate');",
+									"    pm.expect(target.id).equal(source.id);",
+									"    pm.expect(target.firstName).equal(patch.firstName);",
+									"    pm.expect(target.lastName).equal(patch.lastName);",
+									"    pm.expect(target.email).equal(patch.email);",
+									"    pm.expect(target.state).equal(patch.state);",
+									"    pm.expect(target.registrationDate).equal(source.registrationDate);",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"const api = new API(pm);",
+									"const testData = new TestData();",
+									"",
+									"const main = async () => {",
+									"    let user = await api.createUser(testData.getUserDetails());",
+									"    pm.collectionVariables.set('userId', user.id);",
+									"    pm.collectionVariables.set('user', user);",
+									"    let patch = testData.getUserDetails();",
+									"    patch['state'] = 'BLOCKED';",
+									"",
+									"    pm.request.body.update({",
+									"        mode: 'raw',",
+									"        raw: JSON.stringify(patch),",
+									"        options: { raw: { language: 'json' } }",
+									"    });",
+									"};",
+									"",
+									"const interval = setInterval(() => {}, 1000);",
+									"",
+									"setTimeout(async () => ",
+									"    {",
+									"        try {",
+									"            await main();",
+									"        } catch (e) {",
+									"            console.error(e);",
+									"        } finally {",
+									"            clearInterval(interval);",
+									"        }",
+									"    },  ",
+									"    100 ",
+									");",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/users/{{userId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"users",
+								"{{userId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Change user's first name",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Response status should be 200', () => {",
+									"    pm.response.to.be.ok;",
+									"});",
+									"",
+									"pm.test('Response should have a JSON body', () => {",
+									"    pm.response.to.be.withBody;",
+									"    pm.response.to.be.json;",
+									"});",
+									"",
+									"const source = pm.collectionVariables.get('user');",
+									"const patch = JSON.parse(pm.request.body.raw);",
+									"const target = pm.response.json();",
+									"",
+									"pm.test('User properties should have correct values', () => {",
+									"    pm.expect(target).to.have.property('id');",
+									"    pm.expect(target).to.have.property('firstName');",
+									"    pm.expect(target).to.have.property('lastName');",
+									"    pm.expect(target).to.have.property('email');",
+									"    pm.expect(target).to.have.property('state');",
+									"    pm.expect(target).to.have.property('registrationDate');",
+									"    pm.expect(target.id).equal(source.id);",
+									"    pm.expect(target.firstName).equal(patch.firstName);",
+									"    pm.expect(target.lastName).equal(source.lastName);",
+									"    pm.expect(target.email).equal(source.email);",
+									"    pm.expect(target.state).equal(source.state);",
+									"    pm.expect(target.registrationDate).equal(source.registrationDate);",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"const api = new API(pm);",
+									"const testData = new TestData();",
+									"",
+									"const main = async () => {",
+									"    let user = await api.createUser(testData.getUserDetails());",
+									"    pm.collectionVariables.set('userId', user.id);",
+									"    pm.collectionVariables.set('user', user);",
+									"    let patch = {",
+									"        firstName: testData.getUserDetails().firstName",
+									"    }",
+									"",
+									"    pm.request.body.update({",
+									"        mode: 'raw',",
+									"        raw: JSON.stringify(patch),",
+									"        options: { raw: { language: 'json' } }",
+									"    });",
+									"};",
+									"",
+									"const interval = setInterval(() => {}, 1000);",
+									"",
+									"setTimeout(async () => ",
+									"    {",
+									"        try {",
+									"            await main();",
+									"        } catch (e) {",
+									"            console.error(e);",
+									"        } finally {",
+									"            clearInterval(interval);",
+									"        }",
+									"    },  ",
+									"    100 ",
+									");",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/users/{{userId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"users",
+								"{{userId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Change user's last name",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Response status should be 200', () => {",
+									"    pm.response.to.be.ok;",
+									"});",
+									"",
+									"pm.test('Response should have a JSON body', () => {",
+									"    pm.response.to.be.withBody;",
+									"    pm.response.to.be.json;",
+									"});",
+									"",
+									"const source = pm.collectionVariables.get('user');",
+									"const patch = JSON.parse(pm.request.body.raw);",
+									"const target = pm.response.json();",
+									"",
+									"pm.test('User properties should have correct values', () => {",
+									"    pm.expect(target).to.have.property('id');",
+									"    pm.expect(target).to.have.property('firstName');",
+									"    pm.expect(target).to.have.property('lastName');",
+									"    pm.expect(target).to.have.property('email');",
+									"    pm.expect(target).to.have.property('state');",
+									"    pm.expect(target).to.have.property('registrationDate');",
+									"    pm.expect(target.id).equal(source.id);",
+									"    pm.expect(target.firstName).equal(source.firstName);",
+									"    pm.expect(target.lastName).equal(patch.lastName);",
+									"    pm.expect(target.email).equal(source.email);",
+									"    pm.expect(target.state).equal(source.state);",
+									"    pm.expect(target.registrationDate).equal(source.registrationDate);",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"const api = new API(pm);",
+									"const testData = new TestData();",
+									"",
+									"const main = async () => {",
+									"    let user = await api.createUser(testData.getUserDetails());",
+									"    pm.collectionVariables.set('userId', user.id);",
+									"    pm.collectionVariables.set('user', user);",
+									"    let patch = {",
+									"        lastName: testData.getUserDetails().lastName",
+									"    }",
+									"",
+									"    pm.request.body.update({",
+									"        mode: 'raw',",
+									"        raw: JSON.stringify(patch),",
+									"        options: { raw: { language: 'json' } }",
+									"    });",
+									"};",
+									"",
+									"const interval = setInterval(() => {}, 1000);",
+									"",
+									"setTimeout(async () => ",
+									"    {",
+									"        try {",
+									"            await main();",
+									"        } catch (e) {",
+									"            console.error(e);",
+									"        } finally {",
+									"            clearInterval(interval);",
+									"        }",
+									"    },  ",
+									"    100 ",
+									");",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/users/{{userId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"users",
+								"{{userId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Change user's email",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Response status should be 200', () => {",
+									"    pm.response.to.be.ok;",
+									"});",
+									"",
+									"pm.test('Response should have a JSON body', () => {",
+									"    pm.response.to.be.withBody;",
+									"    pm.response.to.be.json;",
+									"});",
+									"",
+									"const source = pm.collectionVariables.get('user');",
+									"const patch = JSON.parse(pm.request.body.raw);",
+									"const target = pm.response.json();",
+									"",
+									"pm.test('User properties should have correct values', () => {",
+									"    pm.expect(target).to.have.property('id');",
+									"    pm.expect(target).to.have.property('firstName');",
+									"    pm.expect(target).to.have.property('lastName');",
+									"    pm.expect(target).to.have.property('email');",
+									"    pm.expect(target).to.have.property('state');",
+									"    pm.expect(target).to.have.property('registrationDate');",
+									"    pm.expect(target.id).equal(source.id);",
+									"    pm.expect(target.firstName).equal(source.firstName);",
+									"    pm.expect(target.lastName).equal(source.lastName);",
+									"    pm.expect(target.email).equal(patch.email);",
+									"    pm.expect(target.state).equal(source.state);",
+									"    pm.expect(target.registrationDate).equal(source.registrationDate);",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"const api = new API(pm);",
+									"const testData = new TestData();",
+									"",
+									"const main = async () => {",
+									"    let user = await api.createUser(testData.getUserDetails());",
+									"    pm.collectionVariables.set('userId', user.id);",
+									"    pm.collectionVariables.set('user', user);",
+									"    let patch = {",
+									"        email: testData.getUserDetails().email",
+									"    }",
+									"",
+									"    pm.request.body.update({",
+									"        mode: 'raw',",
+									"        raw: JSON.stringify(patch),",
+									"        options: { raw: { language: 'json' } }",
+									"    });",
+									"};",
+									"",
+									"const interval = setInterval(() => {}, 1000);",
+									"",
+									"setTimeout(async () => ",
+									"    {",
+									"        try {",
+									"            await main();",
+									"        } catch (e) {",
+									"            console.error(e);",
+									"        } finally {",
+									"            clearInterval(interval);",
+									"        }",
+									"    },  ",
+									"    100 ",
+									");",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/users/{{userId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"users",
+								"{{userId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Change user's state",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Response status should be 200', () => {",
+									"    pm.response.to.be.ok;",
+									"});",
+									"",
+									"pm.test('Response should have a JSON body', () => {",
+									"    pm.response.to.be.withBody;",
+									"    pm.response.to.be.json;",
+									"});",
+									"",
+									"const source = pm.collectionVariables.get('user');",
+									"const patch = JSON.parse(pm.request.body.raw);",
+									"const target = pm.response.json();",
+									"",
+									"pm.test('User properties should have correct values', () => {",
+									"    pm.expect(target).to.have.property('id');",
+									"    pm.expect(target).to.have.property('firstName');",
+									"    pm.expect(target).to.have.property('lastName');",
+									"    pm.expect(target).to.have.property('email');",
+									"    pm.expect(target).to.have.property('state');",
+									"    pm.expect(target).to.have.property('registrationDate');",
+									"    pm.expect(target.id).equal(source.id);",
+									"    pm.expect(target.firstName).equal(source.firstName);",
+									"    pm.expect(target.lastName).equal(source.lastName);",
+									"    pm.expect(target.email).equal(source.email);",
+									"    pm.expect(target.state).equal(patch.state);",
+									"    pm.expect(target.registrationDate).equal(source.registrationDate);",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"const api = new API(pm);",
+									"const testData = new TestData();",
+									"",
+									"const main = async () => {",
+									"    let user = await api.createUser(testData.getUserDetails());",
+									"    pm.collectionVariables.set('userId', user.id);",
+									"    pm.collectionVariables.set('user', user);",
+									"    let patch = {",
+									"        state: 'BLOCKED'",
+									"    }",
+									"",
+									"    pm.request.body.update({",
+									"        mode: 'raw',",
+									"        raw: JSON.stringify(patch),",
+									"        options: { raw: { language: 'json' } }",
+									"    });",
+									"};",
+									"",
+									"const interval = setInterval(() => {}, 1000);",
+									"",
+									"setTimeout(async () => ",
+									"    {",
+									"        try {",
+									"            await main();",
+									"        } catch (e) {",
+									"            console.error(e);",
+									"        } finally {",
+									"            clearInterval(interval);",
+									"        }",
+									"    },  ",
+									"    100 ",
+									");",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/users/{{userId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"users",
+								"{{userId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete user",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Response status should be 200', () => {",
+									"    pm.response.to.be.ok;",
+									"});",
+									"",
+									"pm.test('Response should have a JSON body', () => {",
+									"    pm.response.to.be.withBody;",
+									"    pm.response.to.be.json;",
+									"});",
+									"",
+									"const source = pm.collectionVariables.get('user');",
+									"const target = pm.response.json();",
+									"",
+									"pm.test('User state should change to DELETED', () => {",
+									"    pm.expect(target).to.have.property('id');",
+									"    pm.expect(target).to.have.property('firstName');",
+									"    pm.expect(target).to.have.property('lastName');",
+									"    pm.expect(target).to.have.property('email');",
+									"    pm.expect(target).to.have.property('state');",
+									"    pm.expect(target).to.have.property('registrationDate');",
+									"    pm.expect(target.id).equal(source.id);",
+									"    pm.expect(target.firstName).equal(source.firstName);",
+									"    pm.expect(target.lastName).equal(source.lastName);",
+									"    pm.expect(target.email).equal(source.email);",
+									"    pm.expect(target.state).equal('DELETED');",
+									"    pm.expect(target.registrationDate).equal(source.registrationDate);",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"const api = new API(pm);",
+									"const testData = new TestData();",
+									"",
+									"const main = async () => {",
+									"    let user = await api.createUser(testData.getUserDetails());",
+									"    pm.collectionVariables.set('userId', user.id);",
+									"    pm.collectionVariables.set('user', user);",
+									"};",
+									"",
+									"const interval = setInterval(() => {}, 1000);",
+									"",
+									"setTimeout(async () => ",
+									"    {",
+									"        try {",
+									"            await main();",
+									"        } catch (e) {",
+									"            console.error(e);",
+									"        } finally {",
+									"            clearInterval(interval);",
+									"        }",
+									"    },  ",
+									"    100 ",
+									");",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/users/{{userId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"users",
+								"{{userId}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					"API = class {",
+					"    constructor(postman, baseUrl = \"http://localhost:8080\") {",
+					"        this.pm = postman;",
+					"        this.baseUrl = baseUrl;",
+					"    }",
+					"",
+					"    async createUser(userDetails) {",
+					"        return this.post('/users', userDetails);",
+					"    }",
+					"",
+					"    async deleteUserById(userId) {",
+					"        return this.delete('/users/' + userId);",
+					"    }",
+					"",
+					"    async post(path, body=null) {",
+					"        return this.sendRequest('POST', path, body);",
+					"    }",
+					"",
+					"    async delete(path) {",
+					"        return this.sendRequest('DELETE', path, null);",
+					"    }",
+					"",
+					"    async sendRequest(method, path, body=null) {",
+					"        return new Promise((resolve, reject) => {",
+					"            var request = {",
+					"                url: this.baseUrl + path,",
+					"                method: method,",
+					"                header: {",
+					"                    'Content-Type': 'application/json'",
+					"                },",
+					"                body: body == null ? \"\" : JSON.stringify(body)",
+					"            };",
+					"",
+					"            try {",
+					"                this.pm.sendRequest(request, (error, response) => {",
+					"                    if (error || (response.code >= 400 && response.code <= 599)) {",
+					"                        let err = error ? error : JSON.stringify(response.json());",
+					"                        reject(new Error(err));",
+					"                    } else {",
+					"                        if (response.stream.length === 0) {",
+					"                            reject(new Error(\"Response has no body\"));;",
+					"                        } else {",
+					"                            resolve(response.json());",
+					"                        }",
+					"                    }",
+					"                });",
+					"            } catch (error) {",
+					"                return Promise.reject(error);",
+					"            }",
+					"        });",
+					"    }",
+					"};",
+					"",
+					"TestData = class {",
+					"    constructor() {}",
+					"",
+					"    getUserDetails() {",
+					"        return {",
+					"            firstName: pm.variables.replaceIn('{{$randomFirstName}}'),",
+					"            lastName: pm.variables.replaceIn('{{$randomLastName}}'),",
+					"            email: pm.variables.replaceIn('{{$randomEmail}}')",
+					"        };",
+					"    }",
+					"",
+					"    getRandomText(length=1) {",
+					"        const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';",
+					"        const charsCount = chars.length;",
+					"        let randomTexr = '';",
+					"        let counter = 0;",
+					"        while (counter < length) {",
+					"            randomTexr += chars.charAt(Math.floor(Math.random() * charsCount));",
+					"            counter += 1;",
+					"        }",
+					"        return randomTexr;",
+					"    }",
+					"",
+					"    getRandomUUID() {",
+					"        return pm.variables.replaceIn('{{$randomUUID}}');",
+					"    }",
+					"};",
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:8080",
+			"type": "string"
+		},
+		{
+			"key": "userId",
+			"value": "none",
+			"type": "string"
+		},
+		{
+			"key": "user",
+			"value": "none",
+			"type": "string"
+		}
+	]
+}

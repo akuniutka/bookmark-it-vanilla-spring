@@ -1,0 +1,40 @@
+name: bookmark-it
+
+services:
+
+  db:
+    image: postgres:16.1
+    volumes:
+      - data:/var/lib/postgresql/data
+    networks:
+      - bookmark-it-net
+    environment:
+      - POSTGRES_DB=bookmark_it
+      - POSTGRES_USER=${DATABASE_USER}
+      - POSTGRES_PASSWORD=${DATABASE_PASSWORD}
+    healthcheck:
+      test: pg_isready -q -d $$POSTGRES_DB -U $$POSTGRES_USER
+      timeout: 5s
+      interval: 5s
+      retries: 10
+
+  main-service:
+    image: bookmark-it:latest
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - bookmark-it-net
+    ports:
+      - "8080:8080"
+    environment:
+      - JDBC_URL=jdbc:postgresql://db:5432/bookmark_it
+      - JDBC_USERNAME=${DATABASE_USER}
+      - JDBC_PASSWORD=${DATABASE_PASSWORD}
+
+networks:
+  bookmark-it-net:
+    name: bookmark-it-net
+
+volumes:
+  data:
