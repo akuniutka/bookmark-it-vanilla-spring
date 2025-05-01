@@ -1,0 +1,10 @@
+[
+  {
+    "level": "INFO",
+    "message": "Received request for users"
+  },
+  {
+    "level": "INFO",
+    "message": "Responded with users requested"
+  }
+]

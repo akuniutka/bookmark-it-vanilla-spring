@@ -1,0 +1,10 @@
+[
+  {
+    "id": "92f08b0a-4302-40ff-823d-b9ce18522552",
+    "firstName": "John",
+    "lastName": "Doe",
+    "email": "john@mail.com",
+    "state": "ACTIVE",
+    "registrationDate": "2001-02-03T04:05:06.789Z"
+  }
+]
