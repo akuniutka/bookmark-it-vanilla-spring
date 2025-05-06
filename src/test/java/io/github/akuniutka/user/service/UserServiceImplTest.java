@@ -11,8 +11,11 @@ import io.github.akuniutka.util.LogListener;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InOrder;
+import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
 import java.util.Optional;
@@ -29,18 +32,19 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.hamcrest.MockitoHamcrest.argThat;
 
+@ExtendWith(MockitoExtension.class)
 class UserServiceImplTest {
 
     private static final LogListener logListener = new LogListener(UserServiceImpl.class);
 
+    @Mock
     private UserRepository mockRepository;
-    private InOrder inOrder;
 
     private UserService service;
+    private InOrder inOrder;
 
     @BeforeEach
     void setUp() {
-        mockRepository = Mockito.mock(UserRepository.class);
         inOrder = Mockito.inOrder(mockRepository);
         logListener.startListen();
         logListener.reset();

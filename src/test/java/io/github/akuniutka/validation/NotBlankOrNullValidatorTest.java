@@ -9,6 +9,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 class NotBlankOrNullValidatorTest {
 
     private static final ConstraintValidatorContext CONTEXT = null;
+
     private NotBlankOrNullValidator validator;
 
     @BeforeEach

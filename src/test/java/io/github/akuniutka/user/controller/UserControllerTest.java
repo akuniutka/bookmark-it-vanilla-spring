@@ -15,8 +15,12 @@ import io.github.akuniutka.util.LogListener;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InOrder;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.validation.BindingResult;
 
 import java.util.List;
@@ -32,26 +36,30 @@ import static org.mockito.ArgumentMatchers.refEq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+@ExtendWith(MockitoExtension.class)
 class UserControllerTest {
 
     private static final LogListener logListener = new LogListener(UserController.class);
 
+    @Mock
     private UserService mockUserService;
-    private UserMapper mockUserMapper;
-    private BindingResult mockBindingResult;
-    private InOrder inOrder;
 
+    @Mock
+    private UserMapper mockUserMapper;
+
+    @Mock
+    private BindingResult mockBindingResult;
+
+    @InjectMocks
     private UserController controller;
+
+    private InOrder inOrder;
 
     @BeforeEach
     void setUp() {
-        mockUserService = Mockito.mock(UserService.class);
-        mockUserMapper = Mockito.mock(UserMapper.class);
-        mockBindingResult = Mockito.mock(BindingResult.class);
         inOrder = Mockito.inOrder(mockUserService, mockUserMapper, mockBindingResult);
         logListener.startListen();
         logListener.reset();
-        controller = new UserController(mockUserService, mockUserMapper);
     }
 
     @AfterEach
