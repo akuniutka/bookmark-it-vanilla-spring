@@ -4,5 +4,5 @@
   "lastName": "Doe",
   "email": "john@mail.com",
   "state": "ACTIVE",
-  "registrationDate": "2001-02-03T04:05:06.789Z"
+  "registrationDate": "2001-02-03T04:05:06.789012Z"
 }

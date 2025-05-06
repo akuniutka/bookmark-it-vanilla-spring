@@ -17,7 +17,7 @@ public final class TestUser {
     public static final String UPPERCASE_EMAIL = EMAIL.toUpperCase();
     public static final User.State STATE = User.State.ACTIVE;
     public static final Instant REGISTRATION_DATE = ApplicationTestConfig.FIXED_TIME;
-    public static final Timestamp MODIFIED = Timestamp.from(Instant.parse("2002-03-04T05:06:07.890Z"));
+    public static final Timestamp MODIFIED = Timestamp.from(Instant.parse("2002-03-04T05:06:07.890123Z"));
     public static final String OTHER_FIRST_NAME = "Jack";
     public static final String OTHER_LAST_NAME = "Sparrow";
     public static final String OTHER_EMAIL = "jack@mail.com";
