@@ -10,8 +10,12 @@ import io.github.akuniutka.user.service.UserService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InOrder;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -35,21 +39,27 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@ExtendWith(MockitoExtension.class)
 class UserControllerIT {
 
     private static final String BASE_URL = "/users";
 
+    @Mock
     private UserService mockUserService;
+
+    @Mock
     private UserMapper mockUserMapper;
+
+    @InjectMocks
+    private UserController userController;
+
     private MockMvc mockMvc;
     private InOrder inOrder;
 
     @BeforeEach
     void setUp() {
-        mockUserService = Mockito.mock(UserService.class);
-        mockUserMapper = Mockito.mock(UserMapper.class);
         inOrder = Mockito.inOrder(mockUserService, mockUserMapper);
-        mockMvc = MockMvcBuilders.standaloneSetup(new UserController(mockUserService, mockUserMapper)).build();
+        mockMvc = MockMvcBuilders.standaloneSetup(userController).build();
     }
 
     @AfterEach
