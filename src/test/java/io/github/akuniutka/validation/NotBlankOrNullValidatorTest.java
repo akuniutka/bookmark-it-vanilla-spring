@@ -1,28 +1,22 @@
 package io.github.akuniutka.validation;
 
 import jakarta.validation.ConstraintValidatorContext;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.BDDAssertions.then;
 
 class NotBlankOrNullValidatorTest {
 
     private static final ConstraintValidatorContext CONTEXT = null;
 
-    private NotBlankOrNullValidator validator;
-
-    @BeforeEach
-    void setUp() {
-        validator = new NotBlankOrNullValidator();
-    }
+    private final NotBlankOrNullValidator validator = new NotBlankOrNullValidator();
 
     @Test
     void whenIsValidAndCharSequenceIsNull_ThenReturnTrue() {
 
         final boolean isValid = validator.isValid(null, CONTEXT);
 
-        assertThat(isValid).isTrue();
+        then(isValid).isTrue();
     }
 
     @Test
@@ -30,7 +24,7 @@ class NotBlankOrNullValidatorTest {
 
         final boolean isValid = validator.isValid("", CONTEXT);
 
-        assertThat(isValid).isFalse();
+        then(isValid).isFalse();
     }
 
     @Test
@@ -38,7 +32,7 @@ class NotBlankOrNullValidatorTest {
 
         final boolean isValid = validator.isValid(" ", CONTEXT);
 
-        assertThat(isValid).isFalse();
+        then(isValid).isFalse();
     }
 
     @Test
@@ -46,6 +40,6 @@ class NotBlankOrNullValidatorTest {
 
         final boolean isValid = validator.isValid("test", CONTEXT);
 
-        assertThat(isValid).isTrue();
+        then(isValid).isTrue();
     }
 }

@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.junit.jupiter.web.SpringJUnitWebConfig;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.BDDAssertions.then;
 
 @SpringJUnitWebConfig(ApplicationConfig.class)
 class BookmarkItApplicationIT {
@@ -17,6 +17,6 @@ class BookmarkItApplicationIT {
     @Test
     void whenLoadSpringContext_ThenNoErrors() {
 
-        assertThat(userController).isNotNull();
+        then(userController).isNotNull();
     }
 }
