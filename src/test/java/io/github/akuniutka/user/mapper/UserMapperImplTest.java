@@ -9,51 +9,37 @@ import io.github.akuniutka.user.TestUserDto;
 import io.github.akuniutka.user.dto.UpdateUserRequest;
 import io.github.akuniutka.user.dto.UserDto;
 import io.github.akuniutka.user.entity.User;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
-import org.mockito.InOrder;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 
 import java.util.List;
 
 import static io.github.akuniutka.user.TestUser.ID;
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.BDDAssertions.then;
 import static org.mockito.Mockito.when;
 
 class UserMapperImplTest {
 
-    private UserMapper mapper;
-
-    @BeforeEach
-    void setUp() {
-        mapper = new UserMapperImpl();
-    }
+    private final UserMapper mapper = new UserMapperImpl();
 
     @Test
     void whenMapCreateUserRequestToEntityAndRequestIsNull_ThenReturnNull() {
 
         final User user = mapper.mapToEntity(null);
 
-        assertThat(user).isNull();
+        then(user).isNull();
     }
 
     @Test
     void whenMapCreateUserRequestToEntityAndRequestNotNull_ThenReturnCorrectUser() {
-        try (MockedStatic<Generators> mockGenerators = Mockito.mockStatic(Generators.class)) {
-            final MockedStatic.Verification staticMethod = Generators::timeBasedEpochGenerator;
-            final TimeBasedEpochGenerator mockGenerator = Mockito.mock(TimeBasedEpochGenerator.class);
-            final InOrder inOrder = Mockito.inOrder(Generators.class, mockGenerator);
-            when(Generators.timeBasedEpochGenerator()).thenReturn(mockGenerator);
-            when(mockGenerator.generate()).thenReturn(ID);
+        try (MockUUIDGenerator ignored = new MockUUIDGenerator()) {
 
             final User user = mapper.mapToEntity(TestCreateUserRequest.base());
 
-            assertThat(user).usingRecursiveComparison().isEqualTo(TestUser.fresh());
-            inOrder.verify(mockGenerators, staticMethod);
-            inOrder.verify(mockGenerator).generate();
+            then(user).usingRecursiveComparison().isEqualTo(TestUser.fresh());
         }
     }
 
@@ -62,7 +48,7 @@ class UserMapperImplTest {
 
         final User patch = mapper.mapToEntity(null, null);
 
-        assertThat(patch).isNull();
+        then(patch).isNull();
     }
 
     @Test
@@ -70,7 +56,7 @@ class UserMapperImplTest {
 
         final User patch = mapper.mapToEntity(null, TestUpdateUserRequest.base());
 
-        assertThat(patch).isNull();
+        then(patch).isNull();
     }
 
     @Test
@@ -78,7 +64,7 @@ class UserMapperImplTest {
 
         final User patch = mapper.mapToEntity(ID, null);
 
-        assertThat(patch).isNull();
+        then(patch).isNull();
     }
 
     @Test
@@ -86,7 +72,7 @@ class UserMapperImplTest {
 
         final User patch = mapper.mapToEntity(ID, TestUpdateUserRequest.base());
 
-        assertThat(patch).usingRecursiveComparison().isEqualTo(TestUser.patch());
+        then(patch).usingRecursiveComparison().isEqualTo(TestUser.patch());
     }
 
     @ParameterizedTest
@@ -96,7 +82,7 @@ class UserMapperImplTest {
 
         final User.State mappedState = mapper.mapToEntity(ID, request).getState();
 
-        assertThat(mappedState.name()).isEqualTo(state.name());
+        then(mappedState.name()).isEqualTo(state.name());
     }
 
     @Test
@@ -105,7 +91,7 @@ class UserMapperImplTest {
 
         final User.State mappedState = mapper.mapToEntity(ID, request).getState();
 
-        assertThat(mappedState).isNull();
+        then(mappedState).isNull();
     }
 
     @Test
@@ -113,7 +99,7 @@ class UserMapperImplTest {
 
         final UserDto dto = mapper.mapToDto((User) null);
 
-        assertThat(dto).isNull();
+        then(dto).isNull();
     }
 
     @Test
@@ -121,7 +107,7 @@ class UserMapperImplTest {
 
         final UserDto dto = mapper.mapToDto(TestUser.persisted());
 
-        assertThat(dto).isEqualTo(TestUserDto.base());
+        then(dto).isEqualTo(TestUserDto.base());
     }
 
     @Test
@@ -131,7 +117,7 @@ class UserMapperImplTest {
 
         final String mappedState = mapper.mapToDto(user).state();
 
-        assertThat(mappedState).isNull();
+        then(mappedState).isNull();
     }
 
     @Test
@@ -139,7 +125,7 @@ class UserMapperImplTest {
 
         final List<UserDto> dtos = mapper.mapToDto((List<User>) null);
 
-        assertThat(dtos).isNull();
+        then(dtos).isNull();
     }
 
     @Test
@@ -147,7 +133,7 @@ class UserMapperImplTest {
 
         final List<UserDto> dtos = mapper.mapToDto(List.of(TestUser.persisted()));
 
-        assertThat(dtos).containsExactly(TestUserDto.base());
+        then(dtos).containsExactly(TestUserDto.base());
     }
 
     @Test
@@ -155,6 +141,27 @@ class UserMapperImplTest {
 
         final List<UserDto> dtos = mapper.mapToDto(List.of());
 
-        assertThat(dtos).isEmpty();
+        then(dtos).isEmpty();
+    }
+
+    private static class MockUUIDGenerator implements AutoCloseable {
+
+        private final MockedStatic<Generators> mock;
+
+        public MockUUIDGenerator() {
+            this.mock = Mockito.mockStatic(Generators.class);
+            initMock();
+        }
+
+        private void initMock() {
+            final TimeBasedEpochGenerator mockGenerator = Mockito.mock(TimeBasedEpochGenerator.class);
+            when(Generators.timeBasedEpochGenerator()).thenReturn(mockGenerator);
+            when(mockGenerator.generate()).thenReturn(ID);
+        }
+
+        @Override
+        public void close() {
+            mock.close();
+        }
     }
 }

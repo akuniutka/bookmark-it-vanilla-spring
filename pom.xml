@@ -13,7 +13,7 @@
         <maven.compiler.target>21</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <main.class>io.github.akuniutka.BookmarkItApplication</main.class>
-        <spring-webmvc.version>6.1.13</spring-webmvc.version>
+        <spring-framework.version>6.2.6</spring-framework.version>
         <spring-data-jpa.version>3.3.3</spring-data-jpa.version>
         <tomcat.version>10.1.30</tomcat.version>
         <jackson.version>2.18.0</jackson.version>
@@ -26,7 +26,6 @@
         <mapstruct.version>1.6.0</mapstruct.version>
         <postgresql.version>42.7.4</postgresql.version>
 
-        <spring-test.version>6.1.13</spring-test.version>
         <junit.version>5.11.1</junit.version>
         <mockito.version>5.14.1</mockito.version>
         <hamcrest.version>3.0</hamcrest.version>
@@ -50,7 +49,7 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-webmvc</artifactId>
-            <version>${spring-webmvc.version}</version>
+            <version>${spring-framework.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.data</groupId>
@@ -122,7 +121,7 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-test</artifactId>
-            <version>${spring-test.version}</version>
+            <version>${spring-framework.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>

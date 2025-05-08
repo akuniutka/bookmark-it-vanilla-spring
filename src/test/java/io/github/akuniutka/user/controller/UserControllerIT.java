@@ -4,40 +4,28 @@ import io.github.akuniutka.user.TestCreateUserRequest;
 import io.github.akuniutka.user.TestUpdateUserRequest;
 import io.github.akuniutka.user.TestUser;
 import io.github.akuniutka.user.TestUserDto;
-import io.github.akuniutka.user.entity.User;
 import io.github.akuniutka.user.mapper.UserMapper;
 import io.github.akuniutka.user.service.UserService;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InOrder;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.test.web.servlet.assertj.MockMvcTester;
+import org.springframework.test.web.servlet.assertj.MvcTestResult;
 
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
+import static io.github.akuniutka.user.TestUser.ID;
 import static io.github.akuniutka.util.TestUtils.loadJson;
 import static io.github.akuniutka.util.TestUtils.refContains;
-import static io.github.akuniutka.user.TestUser.ID;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyList;
+import static org.assertj.core.api.BDDAssertions.then;
 import static org.mockito.ArgumentMatchers.refEq;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
 class UserControllerIT {
@@ -53,118 +41,110 @@ class UserControllerIT {
     @InjectMocks
     private UserController userController;
 
-    private MockMvc mockMvc;
-    private InOrder inOrder;
+    private MockMvcTester mockMvcTester;
 
     @BeforeEach
     void setUp() {
-        inOrder = Mockito.inOrder(mockUserService, mockUserMapper);
-        mockMvc = MockMvcBuilders.standaloneSetup(userController).build();
-    }
-
-    @AfterEach
-    void tearDown() {
-        Mockito.verifyNoMoreInteractions(mockUserService, mockUserMapper);
+        mockMvcTester = MockMvcTester.of(userController);
     }
 
     @Test
     void whenPostAtBaseUrl_ThenInvokeCreateUser() throws Exception {
         final String requestBody = loadJson("requests/create_user.json", getClass());
         final String responseBody = loadJson("responses/create_user.json", getClass());
-        when(mockUserMapper.mapToEntity(any())).thenReturn(TestUser.fresh());
-        when(mockUserService.addUser(any())).thenReturn(TestUser.persisted());
-        when(mockUserMapper.mapToDto(any(User.class))).thenReturn(TestUserDto.base());
+        given(mockUserMapper.mapToEntity(TestCreateUserRequest.base())).willReturn(TestUser.fresh());
+        given(mockUserService.addUser(refEq(TestUser.fresh()))).willReturn(TestUser.persisted());
+        given(mockUserMapper.mapToDto(refEq(TestUser.persisted()))).willReturn(TestUserDto.base());
 
-        mockMvc.perform(post(BASE_URL)
-                        .characterEncoding(StandardCharsets.UTF_8)
-                        .accept(MediaType.APPLICATION_JSON)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(requestBody))
-                .andDo(print())
-                .andExpectAll(
-                        status().isOk(),
-                        content().contentType(MediaType.APPLICATION_JSON),
-                        content().json(responseBody, true));
+        final MvcTestResult response = mockMvcTester
+                .post()
+                .uri(BASE_URL)
+                .characterEncoding(StandardCharsets.UTF_8)
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestBody)
+                .exchange();
 
-        inOrder.verify(mockUserMapper).mapToEntity(TestCreateUserRequest.base());
-        inOrder.verify(mockUserService).addUser(refEq(TestUser.fresh()));
-        inOrder.verify(mockUserMapper).mapToDto(refEq(TestUser.persisted()));
+        then(response)
+                .hasStatus(HttpStatus.OK)
+                .hasContentType(MediaType.APPLICATION_JSON)
+                .bodyJson().isEqualTo(responseBody);
     }
 
     @Test
     void whenGetAtBaseUrl_ThenInvokeFindAllUsers() throws Exception {
         final String responseBody = loadJson("responses/find_all_users.json", getClass());
-        when(mockUserService.findAllUsers()).thenReturn(List.of(TestUser.persisted()));
-        when(mockUserMapper.mapToDto(anyList())).thenReturn(List.of(TestUserDto.base()));
+        given(mockUserService.findAllUsers()).willReturn(List.of(TestUser.persisted()));
+        given(mockUserMapper.mapToDto(refContains(TestUser.persisted()))).willReturn(List.of(TestUserDto.base()));
 
-        mockMvc.perform(get(BASE_URL)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andDo(print())
-                .andExpectAll(
-                        status().isOk(),
-                        content().contentType(MediaType.APPLICATION_JSON),
-                        content().json(responseBody, true));
+        final MvcTestResult response = mockMvcTester
+                .get()
+                .uri(BASE_URL)
+                .accept(MediaType.APPLICATION_JSON)
+                .exchange();
 
-        inOrder.verify(mockUserService).findAllUsers();
-        inOrder.verify(mockUserMapper).mapToDto(refContains(TestUser.persisted()));
+        then(response)
+                .hasStatus(HttpStatus.OK)
+                .hasContentType(MediaType.APPLICATION_JSON)
+                .bodyJson().isEqualTo(responseBody);
     }
 
     @Test
     void whenGetAtBaseUrlWithUserId_ThenInvokeGetUserById() throws Exception {
         final String responseBody = loadJson("responses/get_user_by_id.json", getClass());
-        when(mockUserService.getUserById(any())).thenReturn(TestUser.persisted());
-        when(mockUserMapper.mapToDto(any(User.class))).thenReturn(TestUserDto.base());
+        given(mockUserService.getUserById(ID)).willReturn(TestUser.persisted());
+        given(mockUserMapper.mapToDto(refEq(TestUser.persisted()))).willReturn(TestUserDto.base());
 
-        mockMvc.perform(get(BASE_URL + "/" + ID)
-                .accept(MediaType.APPLICATION_JSON))
-                .andDo(print())
-                .andExpectAll(
-                        status().isOk(),
-                        content().contentType(MediaType.APPLICATION_JSON),
-                        content().json(responseBody, true));
+        final MvcTestResult response = mockMvcTester
+                .get()
+                .uri(BASE_URL + "/" + ID)
+                .accept(MediaType.APPLICATION_JSON)
+                .exchange();
 
-        verify(mockUserService).getUserById(ID);
-        verify(mockUserMapper).mapToDto(refEq(TestUser.persisted()));
+        then(response)
+                .hasStatus(HttpStatus.OK)
+                .hasContentType(MediaType.APPLICATION_JSON)
+                .bodyJson().isEqualTo(responseBody);
     }
 
     @Test
     void whenPatchAtBaseUrlWithUserId_ThenInvokeUpdateUser() throws Exception {
         final String requestBody = loadJson("requests/update_user.json", getClass());
         final String responseBody = loadJson("responses/update_user.json", getClass());
-        when(mockUserMapper.mapToEntity(any(), any())).thenReturn(TestUser.patch());
-        when(mockUserService.updateUser(any())).thenReturn(TestUser.patched());
-        when(mockUserMapper.mapToDto(any(User.class))).thenReturn(TestUserDto.patched());
+        given(mockUserMapper.mapToEntity(ID, TestUpdateUserRequest.base())).willReturn(TestUser.patch());
+        given(mockUserService.updateUser(refEq(TestUser.patch()))).willReturn(TestUser.patched());
+        given(mockUserMapper.mapToDto(refEq(TestUser.patched()))).willReturn(TestUserDto.patched());
 
-        mockMvc.perform(patch(BASE_URL + "/" + ID)
-                        .characterEncoding(StandardCharsets.UTF_8)
+        final MvcTestResult response = mockMvcTester
+                .patch()
+                .uri(BASE_URL + "/" + ID)
+                .characterEncoding(StandardCharsets.UTF_8)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(requestBody))
-                .andDo(print())
-                .andExpectAll(
-                        status().isOk(),
-                        content().contentType(MediaType.APPLICATION_JSON),
-                        content().json(responseBody, true));
+                .content(requestBody)
+                .exchange();
 
-        inOrder.verify(mockUserMapper).mapToEntity(ID, TestUpdateUserRequest.base());
-        inOrder.verify(mockUserService).updateUser(refEq(TestUser.patch()));
-        inOrder.verify(mockUserMapper).mapToDto(refEq(TestUser.patched()));
+        then(response)
+                .hasStatus(HttpStatus.OK)
+                .hasContentType(MediaType.APPLICATION_JSON)
+                .bodyJson().isEqualTo(responseBody);
     }
 
     @Test
     void whenDeleteAtBaseUrlWithUserId_ThenInvokeDeleteUserById() throws Exception {
         final String responseBody = loadJson("responses/delete_user.json", getClass());
-        when(mockUserService.deleteUserById(any())).thenReturn(TestUser.deleted());
-        when(mockUserMapper.mapToDto(any(User.class))).thenReturn(TestUserDto.deleted());
+        given(mockUserService.deleteUserById(ID)).willReturn(TestUser.deleted());
+        given(mockUserMapper.mapToDto(refEq(TestUser.deleted()))).willReturn(TestUserDto.deleted());
 
-        mockMvc.perform(delete(BASE_URL + "/" + ID)
-                .accept(MediaType.APPLICATION_JSON))
-                .andDo(print())
-                .andExpectAll(status().isOk(),
-                        content().contentType(MediaType.APPLICATION_JSON),
-                        content().json(responseBody, true));
+        final MvcTestResult response = mockMvcTester
+                .delete()
+                .uri(BASE_URL + "/" + ID)
+                .accept(MediaType.APPLICATION_JSON)
+                .exchange();
 
-        verify(mockUserService).deleteUserById(ID);
-        verify(mockUserMapper).mapToDto(refEq(TestUser.deleted()));
+        then(response)
+                .hasStatus(HttpStatus.OK)
+                .hasContentType(MediaType.APPLICATION_JSON)
+                .bodyJson().isEqualTo(responseBody);
     }
 }

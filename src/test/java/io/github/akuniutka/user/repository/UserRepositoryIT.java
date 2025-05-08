@@ -11,8 +11,8 @@ import org.springframework.test.context.junit.jupiter.web.SpringJUnitWebConfig;
 import static io.github.akuniutka.user.TestUser.EMAIL;
 import static io.github.akuniutka.user.TestUser.NON_EXISTING_EMAIL;
 import static io.github.akuniutka.user.TestUser.UPPERCASE_EMAIL;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.catchThrowable;
+import static org.assertj.core.api.BDDAssertions.then;
 
 @SpringJUnitWebConfig(ApplicationConfig.class)
 class UserRepositoryIT {
@@ -25,7 +25,7 @@ class UserRepositoryIT {
 
         final boolean exists = repository.existsByEmailIgnoreCase(EMAIL);
 
-        assertThat(exists).isTrue();
+        then(exists).isTrue();
     }
 
     @Test
@@ -33,7 +33,7 @@ class UserRepositoryIT {
 
         final boolean exists = repository.existsByEmailIgnoreCase(UPPERCASE_EMAIL);
 
-        assertThat(exists).isTrue();
+        then(exists).isTrue();
     }
 
     @Test
@@ -41,22 +41,24 @@ class UserRepositoryIT {
 
         final boolean exists = repository.existsByEmailIgnoreCase(NON_EXISTING_EMAIL);
 
-        assertThat(exists).isFalse();
+        then(exists).isFalse();
     }
 
     @Test
     void whenSaveAndAnotherUserHasSameEmail_ThenThrowDataIntegrityViolationException() {
         final User user = TestUser.patchedWithNewEmailOnly();
 
-        assertThatThrownBy(() -> repository.saveAndFlush(user))
-                .isInstanceOf(DataIntegrityViolationException.class);
+        final Throwable throwable = catchThrowable(() -> repository.saveAndFlush(user));
+
+        then(throwable).isInstanceOf(DataIntegrityViolationException.class);
     }
 
     @Test
     void whenSaveAndAnotherUserHasSameEmailInDifferentCase_ThenThrowDataIntegrityViolationException() {
         final User user = TestUser.patchedWithNewEmailUppercaseOnly();
 
-        assertThatThrownBy(() -> repository.saveAndFlush(user))
-                .isInstanceOf(DataIntegrityViolationException.class);
+        final Throwable throwable = catchThrowable(() -> repository.saveAndFlush(user));
+
+        then(throwable).isInstanceOf(DataIntegrityViolationException.class);
     }
 }

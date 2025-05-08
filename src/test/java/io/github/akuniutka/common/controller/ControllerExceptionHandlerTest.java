@@ -29,7 +29,8 @@ import java.util.Set;
 import static io.github.akuniutka.user.TestUser.EMAIL;
 import static io.github.akuniutka.user.TestUser.ID;
 import static io.github.akuniutka.util.TestUtils.assertLogs;
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.BDDAssertions.then;
+import static org.mockito.BDDMockito.given;
 
 class ControllerExceptionHandlerTest {
 
@@ -56,7 +57,7 @@ class ControllerExceptionHandlerTest {
 
         final ProblemDetail response = exceptionHandler.handleHttpMessageNotReadableException(exception);
 
-        assertThat(response)
+        then(response)
                 .hasFieldOrPropertyWithValue("status", HttpStatus.BAD_REQUEST.value())
                 .hasFieldOrPropertyWithValue("detail", "Check data you sent is correct");
         assertLogs(logListener.getEvents(), "http_message_not_readable_exception.json", getClass());
@@ -68,7 +69,7 @@ class ControllerExceptionHandlerTest {
 
         final ProblemDetail response = exceptionHandler.handleDtoNotValidException(exception);
 
-        assertThat(response)
+        then(response)
                 .hasFieldOrPropertyWithValue("status", HttpStatus.BAD_REQUEST.value())
                 .hasFieldOrPropertyWithValue("detail", "Check data you sent is correct");
         assertLogs(logListener.getEvents(), "dto_not_valid_exception_with_null.json", getClass());
@@ -76,20 +77,11 @@ class ControllerExceptionHandlerTest {
 
     @Test
     void whenHandleDtoNotValidExceptionAndErrorsNotNull_ThenReturnProblemsDetailWithErrorsAndLog() throws Exception {
-        final FieldError malformedError = Mockito.mock(FieldError.class);
-        Mockito.when(malformedError.getField()).thenReturn("email");
-        Mockito.when(malformedError.getDefaultMessage()).thenReturn(null);
-        final Errors mockErrors = Mockito.mock(Errors.class);
-        Mockito.when(mockErrors.getFieldErrors()).thenReturn(List.of(
-                new FieldError("name", "name", "exceeds"),
-                new FieldError("name", "name", "contains"),
-                malformedError,
-                new FieldError("email", "email", "exceeds")));
-        final DtoNotValidException exception = new DtoNotValidException(mockErrors);
+        final DtoNotValidException exception = new DtoNotValidException(mockErrors());
 
         final ProblemDetail response = exceptionHandler.handleDtoNotValidException(exception);
 
-        assertThat(response)
+        then(response)
                 .hasFieldOrPropertyWithValue("status", HttpStatus.BAD_REQUEST.value())
                 .hasFieldOrPropertyWithValue("detail", "Check data you sent is correct")
                 .hasFieldOrPropertyWithValue("properties",
@@ -107,7 +99,7 @@ class ControllerExceptionHandlerTest {
 
         final ProblemDetail response = exceptionHandler.handleUserNotFoundException(exception);
 
-        assertThat(response)
+        then(response)
                 .hasFieldOrPropertyWithValue("status", HttpStatus.NOT_FOUND.value())
                 .hasFieldOrPropertyWithValue("detail", "User %s does not exist".formatted(ID));
         assertLogs(logListener.getEvents(), "user_not_found_exception.json", getClass());
@@ -119,7 +111,7 @@ class ControllerExceptionHandlerTest {
 
         final ProblemDetail response = exceptionHandler.handleDuplicateEmailException(exception);
 
-        assertThat(response)
+        then(response)
                 .hasFieldOrPropertyWithValue("status", HttpStatus.CONFLICT.value())
                 .hasFieldOrPropertyWithValue("detail", "User with email %s already registered".formatted(EMAIL));
         assertLogs(logListener.getEvents(), "duplicate_email_exception.json", getClass());
@@ -131,7 +123,7 @@ class ControllerExceptionHandlerTest {
 
         final ProblemDetail response = exceptionHandler.handleUserDeletedException(exception);
 
-        assertThat(response)
+        then(response)
                 .hasFieldOrPropertyWithValue("status", HttpStatus.CONFLICT.value())
                 .hasFieldOrPropertyWithValue("detail", "Cannot update user %s: user deleted".formatted(ID));
         assertLogs(logListener.getEvents(), "user_deleted_exception.json", getClass());
@@ -144,7 +136,7 @@ class ControllerExceptionHandlerTest {
 
         final ProblemDetail response = exceptionHandler.handleObjectOptimisticLockingFailureException(exception);
 
-        assertThat(response)
+        then(response)
                 .hasFieldOrPropertyWithValue("status", HttpStatus.CONFLICT.value())
                 .hasFieldOrPropertyWithValue("detail", "Someone updated data in parallel. Try again later.");
         assertLogs(logListener.getEvents(), "object_optimistic_locking_failure-exception.json", getClass());
@@ -156,7 +148,7 @@ class ControllerExceptionHandlerTest {
 
         final ProblemDetail response = exceptionHandler.handleThrowable(exception);
 
-        assertThat(response)
+        then(response)
                 .hasFieldOrPropertyWithValue("status", HttpStatus.INTERNAL_SERVER_ERROR.value())
                 .hasFieldOrPropertyWithValue("detail", "Please contact site admin");
         assertLogs(logListener.getEvents(), "throwable.json", getClass());
@@ -174,5 +166,20 @@ class ControllerExceptionHandlerTest {
                 return new HttpHeaders();
             }
         };
+    }
+
+    private Errors mockErrors() {
+        final FieldError malformedError = Mockito.mock(FieldError.class);
+        given(malformedError.getField()).willReturn("email");
+        given(malformedError.getDefaultMessage()).willReturn(null);
+
+        final Errors mockErrors = Mockito.mock(Errors.class);
+        given(mockErrors.getFieldErrors()).willReturn(List.of(
+                new FieldError("name", "name", "exceeds"),
+                new FieldError("name", "name", "contains"),
+                malformedError,
+                new FieldError("email", "email", "exceeds")
+        ));
+        return mockErrors;
     }
 }
