@@ -5,8 +5,10 @@ import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import jakarta.validation.ValidatorFactory;
+import org.hamcrest.Matchers;
 import org.json.JSONException;
 import org.mockito.ArgumentMatchers;
+import org.mockito.hamcrest.MockitoHamcrest;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.springframework.core.io.ClassPathResource;
 
@@ -49,8 +51,11 @@ public final class TestUtils {
         JSONAssert.assertEquals(expected, actual, false);
     }
 
+    public static <T> T deepEqual(final T object) {
+        return MockitoHamcrest.argThat(Matchers.samePropertyValuesAs(object));
+    }
+
     public static <T> List<T> refContains(final T element) {
         return ArgumentMatchers.argThat(argument -> contains(samePropertyValuesAs(element)).matches(argument));
     }
-
 }

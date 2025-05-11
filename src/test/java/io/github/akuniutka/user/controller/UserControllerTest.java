@@ -13,6 +13,7 @@ import io.github.akuniutka.user.service.UserService;
 import io.github.akuniutka.util.LogListener;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -30,6 +31,7 @@ import static org.assertj.core.api.BDDAssertions.then;
 import static org.mockito.ArgumentMatchers.refEq;
 import static org.mockito.BDDMockito.given;
 
+@DisplayName("UserController Unit Tests")
 @ExtendWith(MockitoExtension.class)
 class UserControllerTest {
 
@@ -58,6 +60,11 @@ class UserControllerTest {
         logListener.stopListen();
     }
 
+    @DisplayName("""
+            Given a binding result has errors,
+            when create a user,
+            then throw an exception
+            """)
     @Test
     void whenCreateUserAndBindingResultHasErrors_ThenThrowDtoNotValidException() {
         final CreateUserRequest request = TestCreateUserRequest.base();
@@ -70,6 +77,11 @@ class UserControllerTest {
                 .hasFieldOrPropertyWithValue("errors", mockBindingResult);
     }
 
+    @DisplayName("""
+            Given a binding result has no errors,
+            when create a user,
+            then pass the user to the service, return service's response, log the request and the response
+            """)
     @Test
     void whenCreateUserAndBindingResultHasNoErrors_ThenMapToEntityAndPassToServiceAndMapResultToDtoAndReturnDtoAndLog()
             throws Exception {
@@ -83,6 +95,10 @@ class UserControllerTest {
         assertLogs(logListener.getEvents(), "create_user.json", getClass());
     }
 
+    @DisplayName("""
+            When find all users,
+            then return service's response, log the request and the response
+            """)
     @Test
     void whenFindAllUsers_ThenGetFromServiceListOfUsersAndMapThemToDtosAndReturnAndLog() throws Exception {
         given(mockUserService.findAllUsers()).willReturn(List.of(TestUser.persisted()));
@@ -94,6 +110,10 @@ class UserControllerTest {
         assertLogs(logListener.getEvents(), "find_all_users.json", getClass());
     }
 
+    @DisplayName("""
+            When get a user by their ID,
+            then pass ID to the service, return service's response, log the request and the response
+            """)
     @Test
     void whenGetUserById_ThenPassUserIdToServiceAndMapResultToDtoAndReturnDtoAndLog() throws Exception {
         given(mockUserService.getUserById(ID)).willReturn(TestUser.persisted());
@@ -105,6 +125,11 @@ class UserControllerTest {
         assertLogs(logListener.getEvents(), "get_user_by_id.json", getClass());
     }
 
+    @DisplayName("""
+            Given a binding result has errors,
+            when update a user,
+            then throw an exception
+            """)
     @Test
     void whenUpdateUserAndBindingResultHasErrors_ThenThrowDtoNotValidException() {
         final UpdateUserRequest request = TestUpdateUserRequest.base();
@@ -117,6 +142,11 @@ class UserControllerTest {
                 .hasFieldOrPropertyWithValue("errors", mockBindingResult);
     }
 
+    @DisplayName("""
+            Given a binding result has no errors,
+            when update a user,
+            then pass the user to the service, return service's response, log the request and the response
+            """)
     @Test
     void whenUpdateUserAndBindingResultHasNoErrors_ThenMapToEntityAndPassToServiceAndMapResultToDtoAndReturnDtoAndLog()
             throws Exception {
@@ -130,6 +160,10 @@ class UserControllerTest {
         assertLogs(logListener.getEvents(), "update_user.json", getClass());
     }
 
+    @DisplayName("""
+            When delete a user by their ID,
+            then pass ID to the service, return service's response, log the request and the response
+            """)
     @Test
     void whenDeleteUserById_ThenPassUserIdToServiceAndMapResultToDtoAndReturnDtoAndLog() throws Exception {
         given(mockUserService.deleteUserById(ID)).willReturn(TestUser.deleted());
