@@ -9,6 +9,7 @@ import io.github.akuniutka.util.LogListener;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.http.HttpHeaders;
@@ -32,6 +33,7 @@ import static io.github.akuniutka.util.TestUtils.assertLogs;
 import static org.assertj.core.api.BDDAssertions.then;
 import static org.mockito.BDDMockito.given;
 
+@DisplayName("ControllerExceptionHandler Unit Tests")
 class ControllerExceptionHandlerTest {
 
     private static final LogListener logListener = new LogListener(ControllerExceptionHandler.class);
@@ -50,6 +52,10 @@ class ControllerExceptionHandlerTest {
         logListener.stopListen();
     }
 
+    @DisplayName("""
+            When handle HttpMessageNotReadableException,
+            then log error message and return BAD_REQUEST
+            """)
     @Test
     void whenHandleHttpMessageNotReadableException_ThenReturnProblemDetailAndLog() throws Exception {
         final HttpMessageNotReadableException exception = new HttpMessageNotReadableException("Cannot map value",
@@ -63,6 +69,11 @@ class ControllerExceptionHandlerTest {
         assertLogs(logListener.getEvents(), "http_message_not_readable_exception.json", getClass());
     }
 
+    @DisplayName("""
+            Given Errors are null,
+            when handle DtoNotValidException,
+            then log error message and return BAD_REQUEST
+            """)
     @Test
     void whenHandleDtoNotValidExceptionAndErrorsIsNull_ThenReturnProblemDetailWithoutErrorsAndLog() throws Exception {
         final DtoNotValidException exception = new DtoNotValidException(null);
@@ -75,6 +86,11 @@ class ControllerExceptionHandlerTest {
         assertLogs(logListener.getEvents(), "dto_not_valid_exception_with_null.json", getClass());
     }
 
+    @DisplayName("""
+            Given Errors are not null,
+            when handle DtoNotValidException,
+            then log validation errors, return BAD_REQUEST and validation errors
+            """)
     @Test
     void whenHandleDtoNotValidExceptionAndErrorsNotNull_ThenReturnProblemsDetailWithErrorsAndLog() throws Exception {
         final DtoNotValidException exception = new DtoNotValidException(mockErrors());
@@ -93,6 +109,11 @@ class ControllerExceptionHandlerTest {
         assertLogs(logListener.getEvents(), "dto_not_valid_exception.json", getClass());
     }
 
+
+    @DisplayName("""
+            When handle UserNotFoundException,
+            then log error message and return NOT_FOUND
+            """)
     @Test
     void whenHandleUserNotFoundException_ThenReturnProblemDetailsAndLog() throws Exception {
         final UserNotFoundException exception = new UserNotFoundException(ID);
@@ -105,6 +126,10 @@ class ControllerExceptionHandlerTest {
         assertLogs(logListener.getEvents(), "user_not_found_exception.json", getClass());
     }
 
+    @DisplayName("""
+            When handle DuplicateEmailException,
+            then log error message and return CONFLICT
+            """)
     @Test
     void whenHandleDuplicateEmailException_ThenReturnProblemDetailAndLog() throws Exception {
         final DuplicateEmailException exception = new DuplicateEmailException(EMAIL);
@@ -117,6 +142,10 @@ class ControllerExceptionHandlerTest {
         assertLogs(logListener.getEvents(), "duplicate_email_exception.json", getClass());
     }
 
+    @DisplayName("""
+            When handle UserDeletedException,
+            then log error message and return CONFLICT
+            """)
     @Test
     void whenHandleUserDeletedException_ThenReturnProblemDetailAndLog() throws Exception {
         final UserDeletedException exception = new UserDeletedException(ID);
@@ -129,6 +158,10 @@ class ControllerExceptionHandlerTest {
         assertLogs(logListener.getEvents(), "user_deleted_exception.json", getClass());
     }
 
+    @DisplayName("""
+            When handle ObjectOptimisticLockingFailureException,
+            then log error message and return CONFLICT
+            """)
     @Test
     void whenHandleObjectOptimisticLockingFailureException_ThenReturnProblemRetailAndLog() throws  Exception {
         final ObjectOptimisticLockingFailureException exception = new ObjectOptimisticLockingFailureException(
@@ -142,6 +175,10 @@ class ControllerExceptionHandlerTest {
         assertLogs(logListener.getEvents(), "object_optimistic_locking_failure-exception.json", getClass());
     }
 
+    @DisplayName("""
+            When handle any other Throwable,
+            then log error message and exception, return INTERNAL_SERVER_ERROR
+            """)
     @Test
     void whenHandleThrowable_ThenReturnProblemDetailAndLog() throws Exception {
         final RuntimeException exception = new RuntimeException("Test exception");

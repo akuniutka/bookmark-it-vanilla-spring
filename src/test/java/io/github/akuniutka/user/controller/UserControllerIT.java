@@ -7,6 +7,7 @@ import io.github.akuniutka.user.TestUserDto;
 import io.github.akuniutka.user.mapper.UserMapper;
 import io.github.akuniutka.user.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -27,6 +28,7 @@ import static org.assertj.core.api.BDDAssertions.then;
 import static org.mockito.ArgumentMatchers.refEq;
 import static org.mockito.BDDMockito.given;
 
+@DisplayName("UserController Integration Tests")
 @ExtendWith(MockitoExtension.class)
 class UserControllerIT {
 
@@ -48,6 +50,10 @@ class UserControllerIT {
         mockMvcTester = MockMvcTester.of(userController);
     }
 
+    @DisplayName("""
+            When POST at base URL,
+            then create a user, respond with OK and the user created
+            """)
     @Test
     void whenPostAtBaseUrl_ThenInvokeCreateUser() throws Exception {
         final String requestBody = loadJson("requests/create_user.json", getClass());
@@ -71,6 +77,10 @@ class UserControllerIT {
                 .bodyJson().isEqualTo(responseBody);
     }
 
+    @DisplayName("""
+            When GET at base URL,
+            then respond with OK and the list of users
+            """)
     @Test
     void whenGetAtBaseUrl_ThenInvokeFindAllUsers() throws Exception {
         final String responseBody = loadJson("responses/find_all_users.json", getClass());
@@ -89,6 +99,10 @@ class UserControllerIT {
                 .bodyJson().isEqualTo(responseBody);
     }
 
+    @DisplayName("""
+            When GET at base URL with user's ID,
+            then respond with OK and the user
+            """)
     @Test
     void whenGetAtBaseUrlWithUserId_ThenInvokeGetUserById() throws Exception {
         final String responseBody = loadJson("responses/get_user_by_id.json", getClass());
@@ -107,6 +121,10 @@ class UserControllerIT {
                 .bodyJson().isEqualTo(responseBody);
     }
 
+    @DisplayName("""
+            When PATCH at base URL with user's ID,
+            then respond with OK and the user updated
+            """)
     @Test
     void whenPatchAtBaseUrlWithUserId_ThenInvokeUpdateUser() throws Exception {
         final String requestBody = loadJson("requests/update_user.json", getClass());
@@ -130,6 +148,10 @@ class UserControllerIT {
                 .bodyJson().isEqualTo(responseBody);
     }
 
+    @DisplayName("""
+            When DELETE at base URL with user's ID,
+            then respond with OK and the user deleted
+            """)
     @Test
     void whenDeleteAtBaseUrlWithUserId_ThenInvokeDeleteUserById() throws Exception {
         final String responseBody = loadJson("responses/delete_user.json", getClass());
