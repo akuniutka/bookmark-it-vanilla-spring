@@ -46,7 +46,7 @@ class UserServiceImplTest {
     void setUp() {
         logListener.startListen();
         logListener.reset();
-        service = new UserServiceImpl(mockRepository, ApplicationTestConfig.fixedClock());
+        service = new UserServiceImpl(new UserPatcherImpl(), mockRepository, ApplicationTestConfig.fixedClock());
     }
 
     @AfterEach
@@ -192,11 +192,12 @@ class UserServiceImplTest {
     class UpdateUserTest {
 
         @DisplayName("""
-                When apply a null patch,
+                Given a patch is null,
+                when apply the patch to a user,
                 then throw an exception
                 """)
         @Test
-        void whenUpdateUserAndPatchIsNull_ThenThrowIllegalArgumentException() {
+        void givenPatchIsNull_WhenUpdateUser_ThenThrowIllegalArgumentException() {
 
             final Throwable throwable = catchThrowable(() -> service.updateUser(null));
 
@@ -206,12 +207,12 @@ class UserServiceImplTest {
         }
 
         @DisplayName("""
-                Given no user exists with ID specified,
-                when apply a patch with that ID,
+                Given a patch is not null and no user exists with ID in the patch,
+                when apply the patch,
                 then throw an exception
                 """)
         @Test
-        void whenUpdateUserAndUserNotExist_ThenThrowUserNotFound() {
+        void givenUserNotExist_WhenUpdateUser_ThenThrowUserNotFound() {
             final User patch = TestUser.patch();
             given(mockRepository.findById(ID)).willReturn(Optional.empty());
 
@@ -223,12 +224,12 @@ class UserServiceImplTest {
         }
 
         @DisplayName("""
-                Given a user is deleted,
-                when patch that user,
+                Given a patch is not null and a user is deleted,
+                when apply the patch to the user,
                 than throw an exception
                 """)
         @Test
-        void whenUpdateUserAndUserDeleted_ThenThrowUserDeletedException() {
+        void givenUserDeleted_WhenUpdateUser_ThenThrowUserDeletedException() {
             final User patch = TestUser.patch();
             given(mockRepository.findById(ID)).willReturn(Optional.of(TestUser.deleted()));
 
@@ -240,12 +241,12 @@ class UserServiceImplTest {
         }
 
         @DisplayName("""
-                Given a user exists and is not deleted and another user exists with an email in the patch,
-                when patch all first user's properties,
+                Given a patch is not null and a user not deleted and another user exists with an email in the patch,
+                when apply the patch to the first user,
                 then throw an exception
                 """)
         @Test
-        void whenUpdateUserAndNewEmailAlreadyExist_ThenThrowDuplicateEmailException() {
+        void givenAnotherUserExistWithSameEmail_WhenUpdateFirstUser_ThenThrowDuplicateEmailException() {
             final User patch = TestUser.patch();
             given(mockRepository.findById(ID)).willReturn(Optional.of(TestUser.persisted()));
             given(mockRepository.existsByEmailIgnoreCase(OTHER_EMAIL)).willReturn(true);
@@ -258,30 +259,69 @@ class UserServiceImplTest {
         }
 
         @DisplayName("""
-                Given a user exists and is not deleted and another user exists with an email in the patch,
-                when patch first user's email only,
-                then throw an exception
-                """)
-        @Test
-        void whenUpdateUserWithNewEmailOnlyAndThatEmailAlreadyExist_ThenThrowDuplicateEmailException() {
-            final User patch = TestUser.patchWithNewEmailOnly();
-            given(mockRepository.findById(ID)).willReturn(Optional.of(TestUser.persisted()));
-            given(mockRepository.existsByEmailIgnoreCase(OTHER_EMAIL)).willReturn(true);
-
-            final Throwable throwable = catchThrowable(() -> service.updateUser(patch));
-
-            then(throwable)
-                    .isInstanceOf(DuplicateEmailException.class)
-                    .hasFieldOrPropertyWithValue("email", OTHER_EMAIL);
-        }
-
-        @DisplayName("""
-                Given a user exists and is not deleted and no user exists with an email in the patch,
-                when patch all user's properties,
+                Given a patch contains user's email among new data and the user is not deleted,
+                when apply the patch to the user,
                 then update user's properties, save and return the updated user, log success
                 """)
         @Test
-        void whenUpdateUser_ThenPatchUserAndSaveToRepositoryAndReturnAndLog() throws Exception {
+        void givenPatchContainOldEmailAndNewData_WhenUpdateUser_ThenPatchUserAndSaveAndReturnAndLog()
+                throws Exception {
+            given(mockRepository.findById(ID)).willReturn(Optional.of(TestUser.persisted()));
+            given(mockRepository.save(deepEqual(TestUser.patchedWithOldEmail())))
+                    .willReturn(TestUser.patchedWithOldEmail());
+            lenient().when(mockRepository.existsByEmailIgnoreCase(EMAIL)).thenReturn(true);
+
+            final User user = service.updateUser(TestUser.patchWithOldEmail());
+
+            then(user).usingRecursiveComparison().isEqualTo(TestUser.patchedWithOldEmail());
+            assertLogs(logListener.getEvents(), "patch_except_email.json", getClass());
+        }
+
+        @DisplayName("""
+                Given a patch contains user's email in different case among new data and the user is not deleted,
+                when apply the patch to the user,
+                then update user's properties, save and return the updated user, log success
+                """)
+        @Test
+        void givenPatchContainOldEmailInDifferentCaseAndNewData_WhenUpdateUser_ThenPatchUserAndSaveAndReturnAndLog()
+                throws Exception {
+            given(mockRepository.findById(ID)).willReturn(Optional.of(TestUser.persisted()));
+            given(mockRepository.save(deepEqual(TestUser.patchedWithOldEmailUppercase())))
+                    .willReturn(TestUser.patchedWithOldEmailUppercase());
+            lenient().when(mockRepository.existsByEmailIgnoreCase(UPPERCASE_EMAIL)).thenReturn(true);
+
+            final User user = service.updateUser(TestUser.patchWithOldEmailUppercase());
+
+            then(user).usingRecursiveComparison().isEqualTo(TestUser.patchedWithOldEmailUppercase());
+            assertLogs(logListener.getEvents(), "patch_old_email_uppercase.json", getClass());
+        }
+
+        @DisplayName("""
+                Given a patch contains no email among new data and a user is not deleted,
+                when apply the patch to the user,
+                then update user's properties, save and return the updated user, log success
+                """)
+        @Test
+        void givenPatchContainNewDataAndNoEmail_WhenUpdateUser_ThenPatchUserAndSaveAndReturnAndLog()
+                throws Exception {
+            given(mockRepository.findById(ID)).willReturn(Optional.of(TestUser.persisted()));
+            given(mockRepository.save(deepEqual(TestUser.patchedWithOldEmail())))
+                    .willReturn(TestUser.patchedWithOldEmail());
+
+            final User user = service.updateUser(TestUser.patchWithoutEmail());
+
+            then(user).usingRecursiveComparison().isEqualTo(TestUser.patchedWithOldEmail());
+            assertLogs(logListener.getEvents(), "patch_null_email.json", getClass());
+        }
+
+        @DisplayName("""
+                Given a patch has new data and a user is not deleted and no other user with an email in the patch,
+                when apply the patch to the user,
+                then update user's properties, save and return the updated user, log success
+                """)
+        @Test
+        void givenPatchHasNewDataAndNoOtherUserWithSameEmail_WhenUpdateUser_ThenPatchUserAndSaveAndReturnAndLog()
+                throws Exception {
             given(mockRepository.findById(ID)).willReturn(Optional.of(TestUser.persisted()));
             given(mockRepository.save(deepEqual(TestUser.patched()))).willReturn(TestUser.patched());
 
@@ -292,123 +332,19 @@ class UserServiceImplTest {
         }
 
         @DisplayName("""
-                Given a user exists and is not deleted,
-                when patch user's email to the same email in different case among other properties,
-                then update user's properties, save and return the updated user, log success
+                Given a patch has no new data and a user is not deleted,
+                when apply the patch to the user,
+                then return the user and log absence of changes
                 """)
         @Test
-        void whenUpdateUserAndUppercaseEmail_ThenPatchUserAndSaveToRepositoryAndReturnAndLog() throws Exception {
+        void givenPatchHasNoNewData_WhenUpdateUser_ThenReturnUserAndLog() throws Exception {
             given(mockRepository.findById(ID)).willReturn(Optional.of(TestUser.persisted()));
-            given(mockRepository.save(deepEqual(TestUser.patchedWithUppercaseEmail())))
-                    .willReturn(TestUser.patchedWithUppercaseEmail());
-            lenient().when(mockRepository.existsByEmailIgnoreCase(UPPERCASE_EMAIL)).thenReturn(true);
+            lenient().when(mockRepository.existsByEmailIgnoreCase(EMAIL)).thenReturn(true);
 
-            final User user = service.updateUser(TestUser.patchWithUppercaseEmail());
-
-            then(user).usingRecursiveComparison().isEqualTo(TestUser.patchedWithUppercaseEmail());
-            assertLogs(logListener.getEvents(), "patch_user_with_uppercase_email.json", getClass());
-        }
-
-        @DisplayName("""
-                Given a user exists and is not deleted,
-                when patch user's first name only,
-                then update user's first name, save and return the updated user, log success
-                """)
-        @Test
-        void whenUpdateUserAndFirstNameOnly_ThenUpdateFirstNameAndSaveToRepositoryAndReturnAndLog() throws Exception {
-            given(mockRepository.findById(ID)).willReturn(Optional.of(TestUser.persisted()));
-            given(mockRepository.save(deepEqual(TestUser.patchedWithFirstNameOnly()))).willReturn(
-                    TestUser.patchedWithFirstNameOnly());
-
-            final User user = service.updateUser(TestUser.patchWithFirstNameOnly());
-
-            then(user).usingRecursiveComparison().isEqualTo(TestUser.patchedWithFirstNameOnly());
-            assertLogs(logListener.getEvents(), "patch_first_name_only.json", getClass());
-        }
-
-        @DisplayName("""
-                Given a user exists and is not deleted,
-                when patch user's last name only,
-                then update user's last name, save and return the updated user, log success
-                """)
-        @Test
-        void whenUpdateUserAndLastNameOnly_ThenUpdateLastNameAndSaveToRepositoryAndReturnAndLog() throws Exception {
-            given(mockRepository.findById(ID)).willReturn(Optional.of(TestUser.persisted()));
-            given(mockRepository.save(deepEqual(TestUser.patchedWithLastNameOnly())))
-                    .willReturn(TestUser.patchedWithLastNameOnly());
-
-            final User user = service.updateUser(TestUser.patchWithLastNameOnly());
-
-            then(user).usingRecursiveComparison().isEqualTo(TestUser.patchedWithLastNameOnly());
-            assertLogs(logListener.getEvents(), "patch_last_name_only.json", getClass());
-        }
-
-        @DisplayName("""
-                Given a user exists and is not deleted and no user exists with an email in the patch,
-                when patch user's email only,
-                then update user's email, save and return the updated user, log success
-                """)
-        @Test
-        void whenUpdateUserAndNewEmailOnly_ThenUpdateEmailAndSaveToRepositoryAndReturnAndLog() throws Exception {
-            given(mockRepository.findById(ID)).willReturn(Optional.of(TestUser.persisted()));
-            given(mockRepository.save(deepEqual(TestUser.patchedWithNewEmailOnly())))
-                    .willReturn(TestUser.patchedWithNewEmailOnly());
-
-            final User user = service.updateUser(TestUser.patchWithNewEmailOnly());
-
-            then(user).usingRecursiveComparison().isEqualTo(TestUser.patchedWithNewEmailOnly());
-            assertLogs(logListener.getEvents(), "patch_new_email_only.json", getClass());
-        }
-
-        @DisplayName("""
-                Given a user exists and is not deleted,
-                when patch user's email to the same email in different case only,
-                then update user's email, save and return the updated user, log success
-                """)
-        @Test
-        void whenUpdateUserAndUppercaseEmailOnly_ThenUpdateEmailAndSaveToRepositoryAndReturnAndLog() throws Exception {
-            given(mockRepository.findById(ID)).willReturn(Optional.of(TestUser.persisted()));
-            given(mockRepository.save(deepEqual(TestUser.patchedWithUppercaseEmailOnly())))
-                    .willReturn(TestUser.patchedWithUppercaseEmailOnly());
-            lenient().when(mockRepository.existsByEmailIgnoreCase(UPPERCASE_EMAIL)).thenReturn(true);
-
-            final User user = service.updateUser(TestUser.patchWithUppercaseEmailOnly());
-
-            then(user).usingRecursiveComparison().isEqualTo(TestUser.patchedWithUppercaseEmailOnly());
-            assertLogs(logListener.getEvents(), "patch_uppercase_email_only.json", getClass());
-        }
-
-        @DisplayName("""
-                Given a user exists and is not deleted,
-                when patch user's state only,
-                then update user's state, save and return the updated user, log success
-                """)
-        @Test
-        void whenUpdateUserAndStateOnly_ThenUpdateStateAndSaveToRepositoryAndReturnAndLog() throws Exception {
-            given(mockRepository.findById(ID)).willReturn(Optional.of(TestUser.persisted()));
-            given(mockRepository.save(deepEqual(TestUser.patchedWithStateOnly())))
-                    .willReturn(TestUser.patchedWithStateOnly());
-
-            final User user = service.updateUser(TestUser.patchWithStateOnly());
-
-            then(user).usingRecursiveComparison().isEqualTo(TestUser.patchedWithStateOnly());
-            assertLogs(logListener.getEvents(), "patch_state_only.json", getClass());
-        }
-
-        @DisplayName("""
-                Given a user exists and is not deleted,
-                when patch no user's properties,
-                then save and return the user with no changes, log success
-                """)
-        @Test
-        void whenUpdateUserAndEmptyFields_ThenUpdateNothingAndSaveToRepositoryAndReturnAndLog() throws Exception {
-            given(mockRepository.findById(ID)).willReturn(Optional.of(TestUser.persisted()));
-            given(mockRepository.save(deepEqual(TestUser.persisted()))).willReturn(TestUser.persisted());
-
-            final User user = service.updateUser(TestUser.patchWithEmptyFields());
+            final User user = service.updateUser(TestUser.patchWithOldValues());
 
             then(user).usingRecursiveComparison().isEqualTo(TestUser.persisted());
-            assertLogs(logListener.getEvents(), "patch_with_empty_fields.json", getClass());
+            assertLogs(logListener.getEvents(), "patch_with_old_values.json", getClass());
         }
     }
 

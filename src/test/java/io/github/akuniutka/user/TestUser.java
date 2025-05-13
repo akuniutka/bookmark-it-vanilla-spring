@@ -62,9 +62,20 @@ public final class TestUser {
         return user;
     }
 
-    public static User patchedWithUppercaseEmail() {
-        final User user = patched();
+    public static User patchedWithOldEmail() {
+        final User user = persisted();
+        user.setFirstName(OTHER_FIRST_NAME);
+        user.setLastName(OTHER_LAST_NAME);
+        user.setState(OTHER_STATE);
+        return user;
+    }
+
+    public static User patchedWithOldEmailUppercase() {
+        final User user = persisted();
+        user.setFirstName(OTHER_FIRST_NAME);
+        user.setLastName(OTHER_LAST_NAME);
         user.setEmail(UPPERCASE_EMAIL);
+        user.setState(OTHER_STATE);
         return user;
     }
 
@@ -92,12 +103,6 @@ public final class TestUser {
         return user;
     }
 
-    public static User patchedWithUppercaseEmailOnly() {
-        final User user = persisted();
-        user.setEmail(UPPERCASE_EMAIL);
-        return user;
-    }
-
     public static User patchedWithStateOnly() {
         final User user = persisted();
         user.setState(OTHER_STATE);
@@ -111,29 +116,61 @@ public final class TestUser {
     }
 
     public static User patch() {
-        final User user = new User(ID);
-        user.setFirstName(OTHER_FIRST_NAME);
-        user.setLastName(OTHER_LAST_NAME);
-        user.setEmail(OTHER_EMAIL);
-        user.setState(OTHER_STATE);
-        return user;
-    }
-
-    public static User patchWithUppercaseEmail() {
-        final User patch = patch();
-        patch.setEmail(UPPERCASE_EMAIL);
+        final User patch = new User(ID);
+        patch.setFirstName(OTHER_FIRST_NAME);
+        patch.setLastName(OTHER_LAST_NAME);
+        patch.setEmail(OTHER_EMAIL);
+        patch.setState(OTHER_STATE);
         return patch;
     }
 
-    public static User patchWithFirstNameOnly() {
+    public static User patchWithOldEmail() {
+        final User patch = new User(ID);
+        patch.setFirstName(OTHER_FIRST_NAME);
+        patch.setLastName(OTHER_LAST_NAME);
+        patch.setEmail(EMAIL);
+        patch.setState(OTHER_STATE);
+        return patch;
+    }
+
+    public static User patchWithOldEmailUppercase() {
+        final User patch = new User(ID);
+        patch.setFirstName(OTHER_FIRST_NAME);
+        patch.setLastName(OTHER_LAST_NAME);
+        patch.setEmail(UPPERCASE_EMAIL);
+        patch.setState(OTHER_STATE);
+        return patch;
+    }
+
+    public static User patchWithoutEmail() {
+        final User patch = new User(ID);
+        patch.setFirstName(OTHER_FIRST_NAME);
+        patch.setLastName(OTHER_LAST_NAME);
+        patch.setState(OTHER_STATE);
+        return patch;
+    }
+
+    public static User patchWithNewFirstNameOnly() {
         final User patch = new User(ID);
         patch.setFirstName(OTHER_FIRST_NAME);
         return patch;
     }
 
-    public static User patchWithLastNameOnly() {
+    public static User patchWithOldFirstNameOnly() {
+        final User patch = new User(ID);
+        patch.setFirstName(FIRST_NAME);
+        return patch;
+    }
+
+    public static User patchWithNewLastNameOnly() {
         final User patch = new User(ID);
         patch.setLastName(OTHER_LAST_NAME);
+        return patch;
+    }
+
+    public static User patchWithOldLastNameOnly() {
+        final User patch = new User(ID);
+        patch.setLastName(LAST_NAME);
         return patch;
     }
 
@@ -143,15 +180,30 @@ public final class TestUser {
         return patch;
     }
 
-    public static User patchWithUppercaseEmailOnly() {
+    public static User patchWithOldEmailOnly() {
         final User patch = new User(ID);
-        patch.setEmail(UPPERCASE_EMAIL);
+        patch.setEmail(EMAIL);
         return patch;
     }
 
-    public static User patchWithStateOnly() {
+    public static User patchWithNewStateOnly() {
         final User patch = new User(ID);
         patch.setState(OTHER_STATE);
+        return patch;
+    }
+
+    public static User patchWithOldStateOnly() {
+        final User patch = new User(ID);
+        patch.setState(STATE);
+        return patch;
+    }
+
+    public static User patchWithOldValues() {
+        final User patch = new User(ID);
+        patch.setFirstName(FIRST_NAME);
+        patch.setLastName(LAST_NAME);
+        patch.setEmail(EMAIL);
+        patch.setState(STATE);
         return patch;
     }
 
