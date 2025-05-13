@@ -20,6 +20,7 @@ import java.util.UUID;
 @Slf4j
 public class UserServiceImpl implements UserService {
 
+    private final UserPatcher patcher;
     private final UserRepository repository;
     private final Clock clock;
 
@@ -47,14 +48,17 @@ public class UserServiceImpl implements UserService {
     @Override
     public User updateUser(@NonNull final User patch) {
         User user = getUserById(patch.getId());
-        if (user.getState() == User.State.DELETED) {
-            throw new UserDeletedException(user.getId());
+        requireNotDeleted(user);
+        requireEmailNotYetExistOrEquals(patch.getEmail(), user.getEmail());
+        boolean hasChanges = patcher.applyPatchToUser(patch, user);
+        if (hasChanges) {
+            user = repository.save(user);
+            log.info("User updated: id = {}", user.getId());
+            log.debug("User updated = {}", user);
+        } else {
+            log.info("No new data for user: id = {}", user.getId());
+            log.debug("Data in update = {}", patch);
         }
-        requireNoEmailDuplicateWithPatch(patch, user);
-        applyPatchToUser(patch, user);
-        user = repository.save(user);
-        log.info("User updated: id = {}", user.getId());
-        log.debug("User updated = {}", user);
         return user;
     }
 
@@ -74,25 +78,16 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-    private void requireNoEmailDuplicateWithPatch(final User patch, final User user) {
-        if (patch.getEmail() == null || patch.getEmail().equalsIgnoreCase(user.getEmail())) {
-            return;
+    private void requireNotDeleted(final User user) {
+        if (user.getState() == User.State.DELETED) {
+            throw new UserDeletedException(user.getId());
         }
-        requireEmailNotYetExist(patch.getEmail());
     }
 
-    private void applyPatchToUser(final User patch, final User user) {
-        if (patch.getFirstName() != null) {
-            user.setFirstName(patch.getFirstName());
+    private void requireEmailNotYetExistOrEquals(final String newEmail, final String oldEmail) {
+        if (newEmail == null || newEmail.equalsIgnoreCase(oldEmail)) {
+            return;
         }
-        if (patch.getLastName() != null) {
-            user.setLastName(patch.getLastName());
-        }
-        if (patch.getEmail() != null) {
-            user.setEmail(patch.getEmail());
-        }
-        if (patch.getState() != null) {
-            user.setState(patch.getState());
-        }
+        requireEmailNotYetExist(newEmail);
     }
 }
