@@ -1,6 +1,6 @@
 [
   {
-    "level": "INFO",
-    "message": "No new data for user: id = 92f08b0a-4302-40ff-823d-b9ce18522552"
+    "level": "WARN",
+    "message": "No new data for user, nothing to update: id = 92f08b0a-4302-40ff-823d-b9ce18522552"
   }
 ]
