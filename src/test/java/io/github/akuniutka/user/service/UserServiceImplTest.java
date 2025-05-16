@@ -46,7 +46,12 @@ class UserServiceImplTest {
     void setUp() {
         logListener.startListen();
         logListener.reset();
-        service = new UserServiceImpl(new UserPatcherImpl(), mockRepository, ApplicationTestConfig.fixedClock());
+        service = new UserServiceImpl(
+                new UserInitializerImpl(ApplicationTestConfig.fixedClock()),
+                new UserPatcherImpl(),
+                new UserRemoverImpl(),
+                mockRepository
+        );
     }
 
     @AfterEach
@@ -59,11 +64,12 @@ class UserServiceImplTest {
     class AddUserTest {
 
         @DisplayName("""
-                When add a null user,
+                Given a user is null,
+                when add the user,
                 then throw an exception
                 """)
         @Test
-        void whenAddUserAndUserIsNull_ThenThrowIllegalArgumentException() {
+        void givenUserIsNull_WhenAddUser_ThenThrowIllegalArgumentException() {
 
             final Throwable throwable = catchThrowable(() -> service.addUser(null));
 
@@ -73,12 +79,12 @@ class UserServiceImplTest {
         }
 
         @DisplayName("""
-                Given another user exists,
-                when add a new user with the same email,
+                Given another user exists with the same email,
+                when add a new user,
                 then throw an exception
                 """)
         @Test
-        void whenAddUserAndEmailAlreadyExist_ThenThrowDuplicateEmailException() {
+        void givenAnotherUserWithSameEmailExist_WhenAddUser_ThenThrowDuplicateEmailException() {
             final User user = TestUser.fresh();
             given(mockRepository.existsByEmailIgnoreCase(EMAIL)).willReturn(true);
 
@@ -90,12 +96,13 @@ class UserServiceImplTest {
         }
 
         @DisplayName("""
-                Given no other user with same email exists,
+                Given no other user exists with the same email,
                 when add a new user,
-                then add user state and registration date, save and return the updated user, log success
+                then init user's properties, save and return the updated user, log success
                 """)
         @Test
-        void whenAddUser_ThenAddStateRegistrationDateAndSaveToRepositoryAndReturnUserAndLog() throws Exception {
+        void givenNoOtherUserWithSameEmail_WhenAddUser_ThenInitUserPropertiesAndSaveUserAndReturnUserAndLog()
+                throws Exception {
             given(mockRepository.save(deepEqual(TestUser.base()))).willReturn(TestUser.persisted());
 
             final User user = service.addUser(TestUser.fresh());
@@ -353,11 +360,12 @@ class UserServiceImplTest {
     class DeleteUserByIdTest {
 
         @DisplayName("""
-                When delete a user by null ID,
+                Given ID is null,
+                when delete a user by that ID,
                 then throw an exception
                 """)
         @Test
-        void whenDeleteUserByIdAndIdIsNull_ThenThrowIllegalArgumentException() {
+        void givenIdIsNull_WhenDeleteUserById_ThenThrowIllegalArgumentException() {
 
             final Throwable throwable = catchThrowable(() -> service.deleteUserById(null));
 
@@ -372,7 +380,7 @@ class UserServiceImplTest {
                 then throw an exception
                 """)
         @Test
-        void whenDeleteUserByIdAndUserNotExist_ThenThrowUserNotFoundException() {
+        void givenUserNotExist_WhenDeleteUserById_ThenThrowUserNotFoundException() {
             given(mockRepository.findById(ID)).willReturn(Optional.empty());
 
             final Throwable throwable = catchThrowable(() -> service.deleteUserById(ID));
@@ -383,12 +391,28 @@ class UserServiceImplTest {
         }
 
         @DisplayName("""
-                Given a user exists,
+                Given a user has been already deleted,
                 when delete the user by their ID,
-                then change user state to DELETED, save and return the updated user, log success
+                then return the user and log absence of changes
                 """)
         @Test
-        void whenDeleteUserByIdAndUserExist_ThenMarkUserDeletedAndSaveToRepositoryAndReturnAndLog() throws Exception {
+        void givenUserAlreadyDeleted_WhenDeleteUserById_ThenReturnUserAndLog() throws Exception {
+            given(mockRepository.findById(ID)).willReturn(Optional.of(TestUser.deleted()));
+
+            final User user = service.deleteUserById(ID);
+
+            then(user).usingRecursiveComparison().isEqualTo(TestUser.deleted());
+            assertLogs(logListener.getEvents(), "delete_already_deleted_user.json", getClass());
+        }
+
+        @DisplayName("""
+                Given a user has not been deleted yet,
+                when delete the user by their ID,
+                then change user's state to DELETED, save and return the updated user, log success
+                """)
+        @Test
+        void givenUserNotDeletedYet_WhenDeleteUserById_ThenMarkUserDeletedAndSaveToRepositoryAndReturnAndLog() throws
+                Exception {
             given(mockRepository.findById(ID)).willReturn(Optional.of(TestUser.persisted()));
             given(mockRepository.save(deepEqual(TestUser.deleted()))).willReturn(TestUser.deleted());
 

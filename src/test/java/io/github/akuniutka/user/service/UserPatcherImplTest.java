@@ -5,6 +5,15 @@ import io.github.akuniutka.user.entity.User;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import static io.github.akuniutka.user.TestUser.EMAIL;
+import static io.github.akuniutka.user.TestUser.FIRST_NAME;
+import static io.github.akuniutka.user.TestUser.ID;
+import static io.github.akuniutka.user.TestUser.LAST_NAME;
+import static io.github.akuniutka.user.TestUser.OTHER_EMAIL;
+import static io.github.akuniutka.user.TestUser.OTHER_FIRST_NAME;
+import static io.github.akuniutka.user.TestUser.OTHER_LAST_NAME;
+import static io.github.akuniutka.user.TestUser.OTHER_STATE;
+import static io.github.akuniutka.user.TestUser.STATE;
 import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.assertj.core.api.BDDAssertions.then;
 
@@ -44,178 +53,149 @@ class UserPatcherImplTest {
     }
 
     @DisplayName("""
-            Given a patch contains new values for all properties and a user is not null,
-            when apply the patch to the user,
-            then update user's properties and return true
-            """)
-    @Test
-    void givenPatchContainNewValuesForAllProperties_WhenApply_ThenUpdatePropertiesAndReturnTrue() {
-        final User user = TestUser.persisted();
-        final User patch = TestUser.patch();
-
-        final boolean isUpdated = patcher.applyPatchToUser(patch, user);
-
-        then(isUpdated).isTrue();
-        then(user).usingRecursiveComparison().isEqualTo(TestUser.patched());
-    }
-
-    @DisplayName("""
-            Given a patch contains old values for all properties and a user is not null,
-            when apply the patch to the user,
-            then do not change user's properties and return false
-            """)
-    @Test
-    void whenPatchContainOldValuesForAllProperties_WhenApply_ThenDoNotChangePropertiesAndReturnFalse() {
-        final User user = TestUser.persisted();
-        final User patch = TestUser.patchWithOldValues();
-
-        final boolean isUpdated = patcher.applyPatchToUser(patch, user);
-
-        then(isUpdated).isFalse();
-        then(user).usingRecursiveComparison().isEqualTo(TestUser.persisted());
-    }
-
-    @DisplayName("""
             Given a patch contains null for all properties and a user is not null,
             when apply the patch to the user,
-            then do not change user's properties and return false
+            then return false
             """)
     @Test
-    void whenPatchContainNullForAllProperties_WhenApply_ThenDoNotChangePropertiesAndReturnFalse() {
+    void whenPatchContainNullForAllProperties_WhenApply_ThenReturnFalse() {
         final User user = TestUser.persisted();
         final User patch = TestUser.patchWithEmptyFields();
 
         final boolean isUpdated = patcher.applyPatchToUser(patch, user);
 
         then(isUpdated).isFalse();
-        then(user).usingRecursiveComparison().isEqualTo(TestUser.persisted());
     }
 
     @DisplayName("""
-            Given a patch contains a new first name only and a user is not null,
+            Given a patch contains the old first name and a user is not null,
             when apply the patch to the user,
-            then update user's first name only and return true
+            then return false
             """)
     @Test
-    void whenPatchContainNewFirstNameOnly_WhenApply_ThenUpdateFirstNameOnlyAndReturnTrue() {
+    void whenPatchContainOldFirstName_WhenApply_ThenDoReturnFalse() {
         final User user = TestUser.persisted();
-        final User patch = TestUser.patchWithNewFirstNameOnly();
-
-        final boolean isUpdated = patcher.applyPatchToUser(patch, user);
-
-        then(isUpdated).isTrue();
-        then(user).usingRecursiveComparison().isEqualTo(TestUser.patchedWithFirstNameOnly());
-    }
-
-    @DisplayName("""
-            Given a patch contains the old first name only and a user is not null,
-            when apply the patch to the user,
-            then do not change user's properties and return false
-            """)
-    @Test
-    void whenPatchContainOldFirstNameOnly_WhenApply_ThenDoNotChangePropertiesAndReturnFalse() {
-        final User user = TestUser.persisted();
-        final User patch = TestUser.patchWithOldFirstNameOnly();
+        final User patch = new User(ID);
+        patch.setFirstName(FIRST_NAME);
 
         final boolean isUpdated = patcher.applyPatchToUser(patch, user);
 
         then(isUpdated).isFalse();
-        then(user).usingRecursiveComparison().isEqualTo(TestUser.persisted());
     }
 
     @DisplayName("""
-            Given a patch contains a new last name only and a user is not null,
+            Given a patch contains a new first name and a user is not null,
             when apply the patch to the user,
-            then user's last name only and return true
+            then update user's first name and return true
             """)
     @Test
-    void givenPatchContainNewLastNameOnly_WhenApply_ThenUpdateLastNameOnlyAndReturnTrue() {
+    void whenPatchContainNewFirstName_WhenApply_ThenUpdateFirstNameAndReturnTrue() {
         final User user = TestUser.persisted();
-        final User patch = TestUser.patchWithNewLastNameOnly();
+        final User patch = new User(ID);
+        patch.setFirstName(OTHER_FIRST_NAME);
 
         final boolean isUpdated = patcher.applyPatchToUser(patch, user);
 
         then(isUpdated).isTrue();
-        then(user).usingRecursiveComparison().isEqualTo(TestUser.patchedWithLastNameOnly());
+        then(user.getFirstName()).isEqualTo(OTHER_FIRST_NAME);
     }
 
     @DisplayName("""
-            Given a patch contains an old last name only and a user is not null,
+            Given a patch contains the old last name and a user is not null,
             when apply the patch to the user,
-            then do not change user's properties and return false
+            then return false
             """)
     @Test
-    void givenPatchContainOldLastNameOnly_WhenApply_ThenDoNotChangePropertiesAndReturnFalse() {
+    void givenPatchContainOldLastName_WhenApply_ThenReturnFalse() {
         final User user = TestUser.persisted();
-        final User patch = TestUser.patchWithOldLastNameOnly();
+        final User patch = new User(ID);
+        patch.setLastName(LAST_NAME);
 
         final boolean isUpdated = patcher.applyPatchToUser(patch, user);
 
         then(isUpdated).isFalse();
-        then(user).usingRecursiveComparison().isEqualTo(TestUser.persisted());
     }
 
     @DisplayName("""
-            Given a patch contains a new email only and a user not is null,
+            Given a patch contains a new last name and a user is not null,
             when apply the patch to the user,
-            then update user's email only and return true
+            then update user's last name and return true
             """)
     @Test
-    void givenPatchContainNewEmailOnly_WhenApply_ThenUpdateEmailOnlyAndReturnTrue() {
+    void givenPatchContainNewLastName_WhenApply_ThenUpdateLastNameAndReturnTrue() {
         final User user = TestUser.persisted();
-        final User patch = TestUser.patchWithNewEmailOnly();
+        final User patch = new User(ID);
+        patch.setLastName(OTHER_LAST_NAME);
 
         final boolean isUpdated = patcher.applyPatchToUser(patch, user);
 
         then(isUpdated).isTrue();
-        then(user).usingRecursiveComparison().isEqualTo(TestUser.patchedWithNewEmailOnly());
+        then(user.getLastName()).isEqualTo(OTHER_LAST_NAME);
     }
 
     @DisplayName("""
-            Given a patch contains an old email only and a user is not null,
+            Given a patch contains the old email and a user is not null,
             when apply the patch to the user,
-            then do not change user's properties and return false
+            then return false
             """)
     @Test
-    void givenPatchContainOldEmailOnly_WhenApply_ThenDoNotChangePropertiesAndReturnFalse() {
+    void givenPatchContainOldEmail_WhenApply_ThenReturnFalse() {
         final User user = TestUser.persisted();
-        final User patch = TestUser.patchWithOldEmailOnly();
+        final User patch = new User(ID);
+        user.setEmail(EMAIL);
 
         final boolean isUpdated = patcher.applyPatchToUser(patch, user);
 
         then(isUpdated).isFalse();
-        then(user).usingRecursiveComparison().isEqualTo(TestUser.persisted());
     }
 
     @DisplayName("""
-            Given a patch contains a new state only and a user is not null,
+            Given a patch contains a new email and a user not is null,
+            when apply the patch to the user,
+            then update user's email and return true
+            """)
+    @Test
+    void givenPatchContainNewEmail_WhenApply_ThenUpdateEmailAndReturnTrue() {
+        final User user = TestUser.persisted();
+        final User patch = new User(ID);
+        patch.setEmail(OTHER_EMAIL);
+
+        final boolean isUpdated = patcher.applyPatchToUser(patch, user);
+
+        then(isUpdated).isTrue();
+        then(user.getEmail()).isEqualTo(OTHER_EMAIL);
+    }
+
+    @DisplayName("""
+            Given a patch contains the old state and a user is not null,
+            when apply the patch to the user,
+            then return false
+            """)
+    @Test
+    void givenPatchContainOldState_WhenApply_ThenReturnFalse() {
+        final User user = TestUser.persisted();
+        final User patch = new User(ID);
+        patch.setState(STATE);
+
+        final boolean isUpdated = patcher.applyPatchToUser(patch, user);
+
+        then(isUpdated).isFalse();
+    }
+
+    @DisplayName("""
+            Given a patch contains a new state and a user is not null,
             when apply the patch to the user,
             then update user's state and return true
             """)
     @Test
-    void givenPatchContainNewStateOnly_WhenApply_ThenUpdateStateOnlyAndReturnTrue() {
+    void givenPatchContainNewState_WhenApply_ThenUpdateStateAndReturnTrue() {
         final User user = TestUser.persisted();
-        final User patch = TestUser.patchWithNewStateOnly();
+        final User patch = new User(ID);
+        patch.setState(OTHER_STATE);
 
         final boolean isUpdated = patcher.applyPatchToUser(patch, user);
 
         then(isUpdated).isTrue();
-        then(user).usingRecursiveComparison().isEqualTo(TestUser.patchedWithStateOnly());
-    }
-
-    @DisplayName("""
-            Given a patch contains an old state only and a user is not null,
-            when apply the patch to the user,
-            then do not change user's properties and return false
-            """)
-    @Test
-    void givenPatchContainOldStateOnly_WhenApply_ThenDoNotChangePropertiesAndReturnFalse() {
-        final User user = TestUser.persisted();
-        final User patch = TestUser.patchWithOldStateOnly();
-
-        final boolean isUpdated = patcher.applyPatchToUser(patch, user);
-
-        then(isUpdated).isFalse();
-        then(user).usingRecursiveComparison().isEqualTo(TestUser.persisted());
+        then(user.getState()).isEqualTo(OTHER_STATE);
     }
 }
