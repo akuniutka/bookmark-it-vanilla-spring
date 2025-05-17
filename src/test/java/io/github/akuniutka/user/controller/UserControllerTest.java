@@ -66,7 +66,7 @@ class UserControllerTest {
             then throw an exception
             """)
     @Test
-    void whenCreateUserAndBindingResultHasErrors_ThenThrowDtoNotValidException() {
+    void givenBindingResultHasErrors_WhenCreateUser_ThenThrowDtoNotValidException() {
         final CreateUserRequest request = TestCreateUserRequest.base();
         given(mockBindingResult.hasErrors()).willReturn(true);
 
@@ -83,7 +83,7 @@ class UserControllerTest {
             then pass the user to the service, return service's response, log the request and the response
             """)
     @Test
-    void whenCreateUserAndBindingResultHasNoErrors_ThenMapToEntityAndPassToServiceAndMapResultToDtoAndReturnDtoAndLog()
+    void givenBindingResultHasNoErrors_WhenCreateUser_ThenMapToEntityAndPassToServiceAndMapResultAndReturnDtoAndLog()
             throws Exception {
         given(mockUserMapper.mapToEntity(TestCreateUserRequest.base())).willReturn(TestUser.fresh());
         given(mockUserService.addUser(refEq(TestUser.fresh()))).willReturn(TestUser.persisted());
@@ -131,7 +131,7 @@ class UserControllerTest {
             then throw an exception
             """)
     @Test
-    void whenUpdateUserAndBindingResultHasErrors_ThenThrowDtoNotValidException() {
+    void givenBindingResultHasErrors_WhenUpdateUser_ThenThrowDtoNotValidException() {
         final UpdateUserRequest request = TestUpdateUserRequest.base();
         given(mockBindingResult.hasErrors()).willReturn(true);
 
@@ -148,7 +148,7 @@ class UserControllerTest {
             then pass the user to the service, return service's response, log the request and the response
             """)
     @Test
-    void whenUpdateUserAndBindingResultHasNoErrors_ThenMapToEntityAndPassToServiceAndMapResultToDtoAndReturnDtoAndLog()
+    void givenBindingResultHasNoErrors_WhenUpdateUser_ThenMapToEntityAndPassToServiceAndMapResultAndReturnDtoAndLog()
             throws Exception {
         given(mockUserMapper.mapToEntity(ID, TestUpdateUserRequest.base())).willReturn(TestUser.patch());
         given(mockUserService.updateUser(refEq(TestUser.patch()))).willReturn(TestUser.patched());

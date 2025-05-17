@@ -58,7 +58,7 @@ class UserPatcherImplTest {
             then return false
             """)
     @Test
-    void whenPatchContainNullForAllProperties_WhenApply_ThenReturnFalse() {
+    void givenPatchContainNullForAllProperties_WhenApply_ThenReturnFalse() {
         final User user = TestUser.persisted();
         final User patch = TestUser.patchWithEmptyFields();
 
@@ -73,7 +73,7 @@ class UserPatcherImplTest {
             then return false
             """)
     @Test
-    void whenPatchContainOldFirstName_WhenApply_ThenDoReturnFalse() {
+    void givenPatchContainOldFirstName_WhenApply_ThenDoReturnFalse() {
         final User user = TestUser.persisted();
         final User patch = new User(ID);
         patch.setFirstName(FIRST_NAME);
@@ -89,7 +89,7 @@ class UserPatcherImplTest {
             then update user's first name and return true
             """)
     @Test
-    void whenPatchContainNewFirstName_WhenApply_ThenUpdateFirstNameAndReturnTrue() {
+    void givenPatchContainNewFirstName_WhenApply_ThenUpdateFirstNameAndReturnTrue() {
         final User user = TestUser.persisted();
         final User patch = new User(ID);
         patch.setFirstName(OTHER_FIRST_NAME);

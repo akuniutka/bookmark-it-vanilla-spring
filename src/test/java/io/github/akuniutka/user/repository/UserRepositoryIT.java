@@ -28,7 +28,7 @@ class UserRepositoryIT {
             then return true
             """)
     @Test
-    void whenExistsByEmailIgnoreCaseAndUserExist_ThenReturnTrue() {
+    void givenUserExist_WhenExistsByEmailIgnoreCase_ThenReturnTrue() {
 
         final boolean exists = repository.existsByEmailIgnoreCase(EMAIL);
 
@@ -36,12 +36,12 @@ class UserRepositoryIT {
     }
 
     @DisplayName("""
-            Given a user exists,
-            when check if the user exists by their email in different case,
+            Given user's email is in different case,
+            when check if the user exists by their email,
             then return true
             """)
     @Test
-    void whenExistsByEmailIgnoreCaseAndUserEmailInDifferentCase_ThenReturnTrue() {
+    void givenUserEmailIsInDifferentCase_WhenExistsByEmailIgnoreCase_ThenReturnTrue() {
 
         final boolean exists = repository.existsByEmailIgnoreCase(UPPERCASE_EMAIL);
 
@@ -54,7 +54,7 @@ class UserRepositoryIT {
             then return false
             """)
     @Test
-    void whenExistsByEmailIgnoreCaseAndUserNotExist_ThenReturnFalse() {
+    void givenNoUserExist_WhenExistsByEmailIgnoreCase_ThenReturnFalse() {
 
         final boolean exists = repository.existsByEmailIgnoreCase(NON_EXISTING_EMAIL);
 
@@ -67,7 +67,7 @@ class UserRepositoryIT {
             then throw an exception
             """)
     @Test
-    void whenSaveAndAnotherUserHasSameEmail_ThenThrowDataIntegrityViolationException() {
+    void givenAnotherUserHasSameEmail_WhenSave_ThenThrowDataIntegrityViolationException() {
         final User user = TestUser.patchedWithNewEmailOnly();
 
         final Throwable throwable = catchThrowable(() -> repository.saveAndFlush(user));
@@ -76,12 +76,12 @@ class UserRepositoryIT {
     }
 
     @DisplayName("""
-            Given another user exists with the email specified,
+            Given another user has the same email in different case,
             when save a user with the same email in different case,
             then throw an exception
             """)
     @Test
-    void whenSaveAndAnotherUserHasSameEmailInDifferentCase_ThenThrowDataIntegrityViolationException() {
+    void givenAnotherUserHasSameEmailInDifferentCase_WhenSave_ThenThrowDataIntegrityViolationException() {
         final User user = TestUser.patchedWithNewEmailUppercaseOnly();
 
         final Throwable throwable = catchThrowable(() -> repository.saveAndFlush(user));

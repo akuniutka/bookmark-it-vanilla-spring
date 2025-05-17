@@ -122,7 +122,7 @@ class UserServiceImplTest {
                 then return a list of all users
                 """)
         @Test
-        void whenFindAllUsers_ThenReturnUserList() {
+        void givenUsersExist_WhenFindAllUsers_ThenReturnUsersList() {
             given(mockRepository.findAll()).willReturn(List.of(TestUser.persisted()));
 
             final List<User> users = service.findAllUsers();
@@ -136,7 +136,7 @@ class UserServiceImplTest {
                 then return an empty list
                 """)
         @Test
-        void whenFindAllUsersAndNoUsers_ThenReturnEmptyList() {
+        void givenNoUserExist_WhenFindAllUsers_ThenReturnEmptyList() {
             given(mockRepository.findAll()).willReturn(List.of());
 
             final List<User> users = service.findAllUsers();
@@ -154,7 +154,7 @@ class UserServiceImplTest {
                 then throw an exception
                 """)
         @Test
-        void whenGetUserByIdAndIdIsNull_ThenThrowIllegalArgumentException() {
+        void givenIdIsNull_WhenGetUserById_ThenThrowIllegalArgumentException() {
 
             final Throwable throwable = catchThrowable(() -> service.getUserById(null));
 
@@ -169,7 +169,7 @@ class UserServiceImplTest {
                 then throw an exception
                 """)
         @Test
-        void whenGetUserByIdAndUserNotExist_ThenThrowUserNotFoundException() {
+        void givenUserNotExist_WhenGetUserById_ThenThrowUserNotFoundException() {
             given(mockRepository.findById(ID)).willReturn(Optional.empty());
 
             final Throwable throwable = catchThrowable(() -> service.getUserById(ID));
@@ -185,7 +185,7 @@ class UserServiceImplTest {
                 then return the user
                 """)
         @Test
-        void whenGetUserByIdeAndUserExist_ThenReturnUser() {
+        void givenUserExist_WhenGetUserById_ThenReturnUser() {
             given(mockRepository.findById(ID)).willReturn(Optional.of(TestUser.persisted()));
 
             final User user = service.getUserById(ID);
