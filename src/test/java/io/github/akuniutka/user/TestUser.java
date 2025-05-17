@@ -79,18 +79,6 @@ public final class TestUser {
         return user;
     }
 
-    public static User patchedWithFirstNameOnly() {
-        final User user = persisted();
-        user.setFirstName(OTHER_FIRST_NAME);
-        return user;
-    }
-
-    public static User patchedWithLastNameOnly() {
-        final User user = persisted();
-        user.setLastName(OTHER_LAST_NAME);
-        return user;
-    }
-
     public static User patchedWithNewEmailOnly() {
         final User user = persisted();
         user.setEmail(OTHER_EMAIL);
@@ -100,12 +88,6 @@ public final class TestUser {
     public static User patchedWithNewEmailUppercaseOnly() {
         final User user = persisted();
         user.setEmail(OTHER_EMAIL_UPPERCASE);
-        return user;
-    }
-
-    public static User patchedWithStateOnly() {
-        final User user = persisted();
-        user.setState(OTHER_STATE);
         return user;
     }
 
@@ -147,54 +129,6 @@ public final class TestUser {
         patch.setFirstName(OTHER_FIRST_NAME);
         patch.setLastName(OTHER_LAST_NAME);
         patch.setState(OTHER_STATE);
-        return patch;
-    }
-
-    public static User patchWithNewFirstNameOnly() {
-        final User patch = new User(ID);
-        patch.setFirstName(OTHER_FIRST_NAME);
-        return patch;
-    }
-
-    public static User patchWithOldFirstNameOnly() {
-        final User patch = new User(ID);
-        patch.setFirstName(FIRST_NAME);
-        return patch;
-    }
-
-    public static User patchWithNewLastNameOnly() {
-        final User patch = new User(ID);
-        patch.setLastName(OTHER_LAST_NAME);
-        return patch;
-    }
-
-    public static User patchWithOldLastNameOnly() {
-        final User patch = new User(ID);
-        patch.setLastName(LAST_NAME);
-        return patch;
-    }
-
-    public static User patchWithNewEmailOnly() {
-        final User patch = new User(ID);
-        patch.setEmail(OTHER_EMAIL);
-        return patch;
-    }
-
-    public static User patchWithOldEmailOnly() {
-        final User patch = new User(ID);
-        patch.setEmail(EMAIL);
-        return patch;
-    }
-
-    public static User patchWithNewStateOnly() {
-        final User patch = new User(ID);
-        patch.setState(OTHER_STATE);
-        return patch;
-    }
-
-    public static User patchWithOldStateOnly() {
-        final User patch = new User(ID);
-        patch.setState(STATE);
         return patch;
     }
 

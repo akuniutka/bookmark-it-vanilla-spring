@@ -19,7 +19,7 @@ class NotBlankOrNullValidatorTest {
             then return true
             """)
     @Test
-    void whenIsValidAndCharSequenceIsNull_ThenReturnTrue() {
+    void givenSequenceIsNull_WhenCheckIfItIsValid_ThenReturnTrue() {
 
         final boolean isValid = validator.isValid(null, CONTEXT);
 
@@ -32,7 +32,7 @@ class NotBlankOrNullValidatorTest {
             then return false
             """)
     @Test
-    void whenIsValidAndCharSequenceIsEmpty_ThenReturnFalse() {
+    void givenSequenceIsEmpty_WhenCheckIfItIsValid_ThenReturnFalse() {
 
         final boolean isValid = validator.isValid("", CONTEXT);
 
@@ -45,7 +45,7 @@ class NotBlankOrNullValidatorTest {
             then return false
             """)
     @Test
-    void whenIsValidAndCharSequenceIsBlank_ThenReturnFalse() {
+    void givenSequenceIsBlank_WhenCheckIfItIsValid_ThenReturnFalse() {
 
         final boolean isValid = validator.isValid(" ", CONTEXT);
 
@@ -58,7 +58,7 @@ class NotBlankOrNullValidatorTest {
             then return true
             """)
     @Test
-    void whenIsValidAndCharSequenceNotBlank_ThenReturnTrue() {
+    void givenSequenceIsNotBlank_WhenCheckIfItIsValid_ThenReturnTrue() {
 
         final boolean isValid = validator.isValid("test", CONTEXT);
 

@@ -75,7 +75,8 @@ class ControllerExceptionHandlerTest {
             then log error message and return BAD_REQUEST
             """)
     @Test
-    void whenHandleDtoNotValidExceptionAndErrorsIsNull_ThenReturnProblemDetailWithoutErrorsAndLog() throws Exception {
+    void givenErrorsAreNull_WhenHandleDtoNotValidExceptionAndErrorsIsNull_ThenReturnProblemDetailWithoutErrorsAndLog()
+            throws Exception {
         final DtoNotValidException exception = new DtoNotValidException(null);
 
         final ProblemDetail response = exceptionHandler.handleDtoNotValidException(exception);
@@ -92,7 +93,8 @@ class ControllerExceptionHandlerTest {
             then log validation errors, return BAD_REQUEST and validation errors
             """)
     @Test
-    void whenHandleDtoNotValidExceptionAndErrorsNotNull_ThenReturnProblemsDetailWithErrorsAndLog() throws Exception {
+    void givenErrorsAreNotNull_WhenHandleDtoNotValidExceptionAndErrorsNotNull_ThenReturnProblemsDetailWithErrorsAndLog()
+            throws Exception {
         final DtoNotValidException exception = new DtoNotValidException(mockErrors());
 
         final ProblemDetail response = exceptionHandler.handleDtoNotValidException(exception);

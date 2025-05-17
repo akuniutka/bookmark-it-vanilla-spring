@@ -38,7 +38,7 @@ class UserMapperImplTest {
                 then return null
                 """)
         @Test
-        void whenMapCreateUserRequestToEntityAndRequestIsNull_ThenReturnNull() {
+        void givenRequestIsNull_WhenMapToEntity_ThenReturnNull() {
 
             final User user = mapper.mapToEntity(null);
 
@@ -51,7 +51,7 @@ class UserMapperImplTest {
                 then return a correct user
                 """)
         @Test
-        void whenMapCreateUserRequestToEntityAndRequestNotNull_ThenReturnCorrectUser() {
+        void givenRequestIsNotNull_WhenMapToEntity_ThenReturnCorrectUser() {
             try (MockUUIDGenerator ignored = new MockUUIDGenerator()) {
 
                 final User user = mapper.mapToEntity(TestCreateUserRequest.base());
@@ -71,7 +71,7 @@ class UserMapperImplTest {
                 then return null
                 """)
         @Test
-        void whenMapUpdateUserRequestToEntityAndBothIdAndRequestAreNull_ThenReturnNull() {
+        void givenUserIdIsNullAndRequestIsNull_WhenMapToEntity_ThenReturnNull() {
 
             final User patch = mapper.mapToEntity(null, null);
 
@@ -84,7 +84,7 @@ class UserMapperImplTest {
                 then return null
                 """)
         @Test
-        void whenMapUpdateUserRequestToEntityAndIdIsNull_ThenReturnNull() {
+        void givenUserIdIsNullAndRequestIsNotNull_WhenMapToEntity_ThenReturnNull() {
 
             final User patch = mapper.mapToEntity(null, TestUpdateUserRequest.base());
 
@@ -97,7 +97,7 @@ class UserMapperImplTest {
                 then return null
                 """)
         @Test
-        void whenMapUpdateUserRequestToEntityAndRequestIsNull_ThenReturnNull() {
+        void givenUserIdIsNotNullAndRequestIsNull_WhenMapToEntity_ThenReturnNull() {
 
             final User patch = mapper.mapToEntity(ID, null);
 
@@ -110,7 +110,7 @@ class UserMapperImplTest {
                 then return a correct user
                 """)
         @Test
-        void whenMapUpdateUserRequest_ThenReturnCorrectPatch() {
+        void givenUserIdIsNotNullAndRequestIsNotNull_WhenMapToEntity_ThenReturnCorrectPatch() {
 
             final User patch = mapper.mapToEntity(ID, TestUpdateUserRequest.base());
 
@@ -124,7 +124,8 @@ class UserMapperImplTest {
                 """)
         @ParameterizedTest
         @EnumSource(UpdateUserRequest.State.class)
-        void whenMapUpdateUserRequest_ThenAllStatesMappedCorrectly(final UpdateUserRequest.State state) {
+        void givenUserIdIsNotNullAndRequestStateIsNotNull_WhenMapToEntity_ThenPatchStateIsCorrect(
+                final UpdateUserRequest.State state) {
             final UpdateUserRequest request = TestUpdateUserRequest.base(state);
 
             final User.State mappedState = mapper.mapToEntity(ID, request).getState();
@@ -138,7 +139,7 @@ class UserMapperImplTest {
                 then user's state is null
                 """)
         @Test
-        void whenMapUpdateUserRequest_ThenNullStateMappedCorrectly() {
+        void givenUserIdIsNotNullAndRequestStateIsNull_WhenMapToEntity_ThenPatchStateIsNull() {
             final UpdateUserRequest request = TestUpdateUserRequest.base(null);
 
             final User.State mappedState = mapper.mapToEntity(ID, request).getState();
@@ -157,7 +158,7 @@ class UserMapperImplTest {
                 then return null
                 """)
         @Test
-        void whenMapUserToDtoAndUserIsNull_ThenReturnNull() {
+        void givenUserIsNull_WhenMapToDto_ThenReturnNull() {
 
             final UserDto dto = mapper.mapToDto((User) null);
 
@@ -170,7 +171,7 @@ class UserMapperImplTest {
                 then return a correct DTO
                 """)
         @Test
-        void whenMapUserToDtoAndUserNotNull_ThenReturnCorrectDto() {
+        void givenUserIsNotNull_WhenMapToDto_ThenReturnCorrectDto() {
 
             final UserDto dto = mapper.mapToDto(TestUser.persisted());
 
@@ -178,12 +179,12 @@ class UserMapperImplTest {
         }
 
         @DisplayName("""
-                Given a user is not null and their state is null,
+                Given user's state is null,
                 when map the user to DTO,
                 then DTO's state is null
                 """)
         @Test
-        void whenMapUserToDtoAndStateIsNull_ThenMappedStateIsAlsoNull() {
+        void givenUserStateIsNull_WhenMapToDto_ThenDtoStateIsNull() {
             final User user = TestUser.persisted();
             user.setState(null);
 
@@ -198,24 +199,11 @@ class UserMapperImplTest {
                 then return null
                 """)
         @Test
-        void whenMapListOfUsersToDtosAndListIsNull_ThenReturnNull() {
+        void givenUsersListIsNull_WhenMapToDtos_ThenReturnNull() {
 
             final List<UserDto> dtos = mapper.mapToDto((List<User>) null);
 
             then(dtos).isNull();
-        }
-
-        @DisplayName("""
-                Given a list of users is not empty,
-                when map the list to a list of DTOs,
-                then return a correct list of DTOs
-                """)
-        @Test
-        void whenMapListOfUsersToDtosAndListNotNull_ThenReturnCorrectListOfDtos() {
-
-            final List<UserDto> dtos = mapper.mapToDto(List.of(TestUser.persisted()));
-
-            then(dtos).containsExactly(TestUserDto.base());
         }
 
         @DisplayName("""
@@ -224,11 +212,24 @@ class UserMapperImplTest {
                 then return an empty list
                 """)
         @Test
-        void whenMapListOfUsersToDtosAndListIsEmpty_ThenReturnEmptyList() {
+        void givenUsersListIsEmpty_WhenMapToDtos_ThenReturnEmptyList() {
 
             final List<UserDto> dtos = mapper.mapToDto(List.of());
 
             then(dtos).isEmpty();
+        }
+
+        @DisplayName("""
+                Given a list of users is not empty,
+                when map the list to a list of DTOs,
+                then return a correct list of DTOs
+                """)
+        @Test
+        void givenUsersListIsNotEmpty_WhenMapToDtos_ThenReturnCorrectListOfDtos() {
+
+            final List<UserDto> dtos = mapper.mapToDto(List.of(TestUser.persisted()));
+
+            then(dtos).containsExactly(TestUserDto.base());
         }
     }
 
