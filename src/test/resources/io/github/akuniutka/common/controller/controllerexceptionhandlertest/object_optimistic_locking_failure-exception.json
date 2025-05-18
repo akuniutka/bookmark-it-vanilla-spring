@@ -1,6 +1,0 @@
-[
-  {
-    "level": "WARN",
-    "message": "Object of class [io.github.akuniutka.user.entity.User] with identifier [92f08b0a-4302-40ff-823d-b9ce18522552]: optimistic locking failed"
-  }
-]
