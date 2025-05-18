@@ -4,11 +4,13 @@ import io.github.akuniutka.config.ApplicationTestConfig;
 import io.github.akuniutka.exception.DuplicateEmailException;
 import io.github.akuniutka.exception.UserDeletedException;
 import io.github.akuniutka.exception.UserNotFoundException;
+import io.github.akuniutka.log.InjectLogCaptor;
+import io.github.akuniutka.log.LogCaptor;
+import io.github.akuniutka.log.LogEvents;
+import io.github.akuniutka.log.WithLogCapture;
 import io.github.akuniutka.user.TestUser;
 import io.github.akuniutka.user.entity.User;
 import io.github.akuniutka.user.repository.UserRepository;
-import io.github.akuniutka.util.LogListener;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -24,7 +26,6 @@ import static io.github.akuniutka.user.TestUser.EMAIL;
 import static io.github.akuniutka.user.TestUser.ID;
 import static io.github.akuniutka.user.TestUser.OTHER_EMAIL;
 import static io.github.akuniutka.user.TestUser.UPPERCASE_EMAIL;
-import static io.github.akuniutka.util.TestUtils.assertLogs;
 import static io.github.akuniutka.util.TestUtils.deepEqual;
 import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.assertj.core.api.BDDAssertions.then;
@@ -35,8 +36,6 @@ import static org.mockito.Mockito.lenient;
 @ExtendWith(MockitoExtension.class)
 class UserServiceImplTest {
 
-    private static final LogListener logListener = new LogListener(UserServiceImpl.class);
-
     @Mock
     private UserRepository mockRepository;
 
@@ -44,8 +43,6 @@ class UserServiceImplTest {
 
     @BeforeEach
     void setUp() {
-        logListener.startListen();
-        logListener.reset();
         service = new UserServiceImpl(
                 new UserInitializerImpl(ApplicationTestConfig.fixedClock()),
                 new UserPatcherImpl(),
@@ -54,14 +51,13 @@ class UserServiceImplTest {
         );
     }
 
-    @AfterEach
-    void tearDown() {
-        logListener.stopListen();
-    }
-
     @DisplayName("Add a new user")
     @Nested
+    @WithLogCapture(UserServiceImpl.class)
     class AddUserTest {
+
+        @InjectLogCaptor
+        LogCaptor logCaptor;
 
         @DisplayName("""
                 Given a user is null,
@@ -101,14 +97,15 @@ class UserServiceImplTest {
                 then init user's properties, save and return the updated user, log success
                 """)
         @Test
-        void givenNoOtherUserWithSameEmail_WhenAddUser_ThenInitUserPropertiesAndSaveUserAndReturnUserAndLog()
-                throws Exception {
+        void givenNoOtherUserWithSameEmail_WhenAddUser_ThenInitUserPropertiesAndSaveUserAndReturnUserAndLog() {
             given(mockRepository.save(deepEqual(TestUser.base()))).willReturn(TestUser.persisted());
 
             final User user = service.addUser(TestUser.fresh());
 
             then(user).usingRecursiveComparison().isEqualTo(TestUser.persisted());
-            assertLogs(logListener.getEvents(), "add_user.json", getClass());
+            then(logCaptor.getEvents()).containsSubsequence(LogEvents.of(
+                    "INFO", "New user added: id = 92f08b0a-4302-40ff-823d-b9ce18522552"
+            ));
         }
     }
 
@@ -196,7 +193,11 @@ class UserServiceImplTest {
 
     @DisplayName("Update a user")
     @Nested
+    @WithLogCapture(UserServiceImpl.class)
     class UpdateUserTest {
+
+        @InjectLogCaptor
+        LogCaptor logCaptor;
 
         @DisplayName("""
                 Given a patch is null,
@@ -271,8 +272,7 @@ class UserServiceImplTest {
                 then update user's properties, save and return the updated user, log success
                 """)
         @Test
-        void givenPatchContainOldEmailAndNewData_WhenUpdateUser_ThenPatchUserAndSaveAndReturnAndLog()
-                throws Exception {
+        void givenPatchContainOldEmailAndNewData_WhenUpdateUser_ThenPatchUserAndSaveAndReturnAndLog() {
             given(mockRepository.findById(ID)).willReturn(Optional.of(TestUser.persisted()));
             given(mockRepository.save(deepEqual(TestUser.patchedWithOldEmail())))
                     .willReturn(TestUser.patchedWithOldEmail());
@@ -281,7 +281,9 @@ class UserServiceImplTest {
             final User user = service.updateUser(TestUser.patchWithOldEmail());
 
             then(user).usingRecursiveComparison().isEqualTo(TestUser.patchedWithOldEmail());
-            assertLogs(logListener.getEvents(), "patch_except_email.json", getClass());
+            then(logCaptor.getEvents()).containsSubsequence(LogEvents.of(
+                    "INFO", "User updated: id = 92f08b0a-4302-40ff-823d-b9ce18522552"
+            ));
         }
 
         @DisplayName("""
@@ -290,8 +292,7 @@ class UserServiceImplTest {
                 then update user's properties, save and return the updated user, log success
                 """)
         @Test
-        void givenPatchContainOldEmailInDifferentCaseAndNewData_WhenUpdateUser_ThenPatchUserAndSaveAndReturnAndLog()
-                throws Exception {
+        void givenPatchContainOldEmailInDifferentCaseAndNewData_WhenUpdateUser_ThenPatchUserAndSaveAndReturnAndLog() {
             given(mockRepository.findById(ID)).willReturn(Optional.of(TestUser.persisted()));
             given(mockRepository.save(deepEqual(TestUser.patchedWithOldEmailUppercase())))
                     .willReturn(TestUser.patchedWithOldEmailUppercase());
@@ -300,7 +301,9 @@ class UserServiceImplTest {
             final User user = service.updateUser(TestUser.patchWithOldEmailUppercase());
 
             then(user).usingRecursiveComparison().isEqualTo(TestUser.patchedWithOldEmailUppercase());
-            assertLogs(logListener.getEvents(), "patch_old_email_uppercase.json", getClass());
+            then(logCaptor.getEvents()).containsSubsequence(LogEvents.of(
+                    "INFO", "User updated: id = 92f08b0a-4302-40ff-823d-b9ce18522552"
+            ));
         }
 
         @DisplayName("""
@@ -309,8 +312,7 @@ class UserServiceImplTest {
                 then update user's properties, save and return the updated user, log success
                 """)
         @Test
-        void givenPatchContainNewDataAndNoEmail_WhenUpdateUser_ThenPatchUserAndSaveAndReturnAndLog()
-                throws Exception {
+        void givenPatchContainNewDataAndNoEmail_WhenUpdateUser_ThenPatchUserAndSaveAndReturnAndLog() {
             given(mockRepository.findById(ID)).willReturn(Optional.of(TestUser.persisted()));
             given(mockRepository.save(deepEqual(TestUser.patchedWithOldEmail())))
                     .willReturn(TestUser.patchedWithOldEmail());
@@ -318,7 +320,9 @@ class UserServiceImplTest {
             final User user = service.updateUser(TestUser.patchWithoutEmail());
 
             then(user).usingRecursiveComparison().isEqualTo(TestUser.patchedWithOldEmail());
-            assertLogs(logListener.getEvents(), "patch_null_email.json", getClass());
+            then(logCaptor.getEvents()).containsSubsequence(LogEvents.of(
+                    "INFO", "User updated: id = 92f08b0a-4302-40ff-823d-b9ce18522552"
+            ));
         }
 
         @DisplayName("""
@@ -327,15 +331,16 @@ class UserServiceImplTest {
                 then update user's properties, save and return the updated user, log success
                 """)
         @Test
-        void givenPatchHasNewDataAndNoOtherUserWithSameEmail_WhenUpdateUser_ThenPatchUserAndSaveAndReturnAndLog()
-                throws Exception {
+        void givenPatchHasNewDataAndNoOtherUserWithSameEmail_WhenUpdateUser_ThenPatchUserAndSaveAndReturnAndLog() {
             given(mockRepository.findById(ID)).willReturn(Optional.of(TestUser.persisted()));
             given(mockRepository.save(deepEqual(TestUser.patched()))).willReturn(TestUser.patched());
 
             final User user = service.updateUser(TestUser.patch());
 
             then(user).usingRecursiveComparison().isEqualTo(TestUser.patched());
-            assertLogs(logListener.getEvents(), "patch_all_user_fields.json", getClass());
+            then(logCaptor.getEvents()).containsSubsequence(LogEvents.of(
+                    "INFO", "User updated: id = 92f08b0a-4302-40ff-823d-b9ce18522552"
+            ));
         }
 
         @DisplayName("""
@@ -344,20 +349,26 @@ class UserServiceImplTest {
                 then return the user and log absence of changes
                 """)
         @Test
-        void givenPatchHasNoNewData_WhenUpdateUser_ThenReturnUserAndLog() throws Exception {
+        void givenPatchHasNoNewData_WhenUpdateUser_ThenReturnUserAndLog() {
             given(mockRepository.findById(ID)).willReturn(Optional.of(TestUser.persisted()));
             lenient().when(mockRepository.existsByEmailIgnoreCase(EMAIL)).thenReturn(true);
 
             final User user = service.updateUser(TestUser.patchWithOldValues());
 
             then(user).usingRecursiveComparison().isEqualTo(TestUser.persisted());
-            assertLogs(logListener.getEvents(), "patch_with_old_values.json", getClass());
+            then(logCaptor.getEvents()).containsSubsequence(LogEvents.of(
+                    "WARN", "No new data for user, nothing to update: id = 92f08b0a-4302-40ff-823d-b9ce18522552"
+            ));
         }
     }
 
     @DisplayName("Delete a user by their ID")
     @Nested
+    @WithLogCapture(UserServiceImpl.class)
     class DeleteUserByIdTest {
+
+        @InjectLogCaptor
+        LogCaptor logCaptor;
 
         @DisplayName("""
                 Given ID is null,
@@ -396,13 +407,15 @@ class UserServiceImplTest {
                 then return the user and log absence of changes
                 """)
         @Test
-        void givenUserAlreadyDeleted_WhenDeleteUserById_ThenReturnUserAndLog() throws Exception {
+        void givenUserAlreadyDeleted_WhenDeleteUserById_ThenReturnUserAndLog() {
             given(mockRepository.findById(ID)).willReturn(Optional.of(TestUser.deleted()));
 
             final User user = service.deleteUserById(ID);
 
             then(user).usingRecursiveComparison().isEqualTo(TestUser.deleted());
-            assertLogs(logListener.getEvents(), "delete_already_deleted_user.json", getClass());
+            then(logCaptor.getEvents()).containsSubsequence(LogEvents.of(
+                    "WARN", "User already deleted, nothing to delete: id = 92f08b0a-4302-40ff-823d-b9ce18522552"
+            ));
         }
 
         @DisplayName("""
@@ -411,15 +424,16 @@ class UserServiceImplTest {
                 then change user's state to DELETED, save and return the updated user, log success
                 """)
         @Test
-        void givenUserNotDeletedYet_WhenDeleteUserById_ThenMarkUserDeletedAndSaveToRepositoryAndReturnAndLog() throws
-                Exception {
+        void givenUserNotDeletedYet_WhenDeleteUserById_ThenMarkUserDeletedAndSaveToRepositoryAndReturnAndLog() {
             given(mockRepository.findById(ID)).willReturn(Optional.of(TestUser.persisted()));
             given(mockRepository.save(deepEqual(TestUser.deleted()))).willReturn(TestUser.deleted());
 
             final User user = service.deleteUserById(ID);
 
             then(user).usingRecursiveComparison().isEqualTo(TestUser.deleted());
-            assertLogs(logListener.getEvents(), "delete_user_by_id.json", getClass());
+            then(logCaptor.getEvents()).containsSubsequence(LogEvents.of(
+                    "INFO", "User marked deleted: id = 92f08b0a-4302-40ff-823d-b9ce18522552"
+            ));
         }
     }
 }

@@ -4,11 +4,12 @@ import io.github.akuniutka.exception.DtoNotValidException;
 import io.github.akuniutka.exception.DuplicateEmailException;
 import io.github.akuniutka.exception.UserDeletedException;
 import io.github.akuniutka.exception.UserNotFoundException;
+import io.github.akuniutka.log.InjectLogCaptor;
+import io.github.akuniutka.log.LogCaptor;
+import io.github.akuniutka.log.LogEvents;
+import io.github.akuniutka.log.WithLogCapture;
 import io.github.akuniutka.user.entity.User;
-import io.github.akuniutka.util.LogListener;
 import org.jetbrains.annotations.NotNull;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -29,35 +30,24 @@ import java.util.Set;
 
 import static io.github.akuniutka.user.TestUser.EMAIL;
 import static io.github.akuniutka.user.TestUser.ID;
-import static io.github.akuniutka.util.TestUtils.assertLogs;
 import static org.assertj.core.api.BDDAssertions.then;
 import static org.mockito.BDDMockito.given;
 
 @DisplayName("ControllerExceptionHandler Unit Tests")
+@WithLogCapture(ControllerExceptionHandler.class)
 class ControllerExceptionHandlerTest {
 
-    private static final LogListener logListener = new LogListener(ControllerExceptionHandler.class);
+    private final ControllerExceptionHandler exceptionHandler = new ControllerExceptionHandler();
 
-    private ControllerExceptionHandler exceptionHandler;
-
-    @BeforeEach
-    void setUp() {
-        logListener.startListen();
-        logListener.reset();
-        exceptionHandler = new ControllerExceptionHandler();
-    }
-
-    @AfterEach
-    void tearDown() {
-        logListener.stopListen();
-    }
+    @InjectLogCaptor
+    LogCaptor logCaptor;
 
     @DisplayName("""
             When handle HttpMessageNotReadableException,
             then log error message and return BAD_REQUEST
             """)
     @Test
-    void whenHandleHttpMessageNotReadableException_ThenReturnProblemDetailAndLog() throws Exception {
+    void whenHandleHttpMessageNotReadableException_ThenReturnProblemDetailAndLog() {
         final HttpMessageNotReadableException exception = new HttpMessageNotReadableException("Cannot map value",
                 emptyHttpMessage());
 
@@ -66,7 +56,9 @@ class ControllerExceptionHandlerTest {
         then(response)
                 .hasFieldOrPropertyWithValue("status", HttpStatus.BAD_REQUEST.value())
                 .hasFieldOrPropertyWithValue("detail", "Check data you sent is correct");
-        assertLogs(logListener.getEvents(), "http_message_not_readable_exception.json", getClass());
+        then(logCaptor.getEvents()).containsSubsequence(LogEvents.of(
+                "WARN", "Cannot map value"
+        ));
     }
 
     @DisplayName("""
@@ -75,8 +67,7 @@ class ControllerExceptionHandlerTest {
             then log error message and return BAD_REQUEST
             """)
     @Test
-    void givenErrorsAreNull_WhenHandleDtoNotValidExceptionAndErrorsIsNull_ThenReturnProblemDetailWithoutErrorsAndLog()
-            throws Exception {
+    void givenErrorsAreNull_WhenHandleDtoNotValidExceptionAndErrorsIsNull_ThenReturnProblemDetailWithoutErrorsAndLog() {
         final DtoNotValidException exception = new DtoNotValidException(null);
 
         final ProblemDetail response = exceptionHandler.handleDtoNotValidException(exception);
@@ -84,7 +75,9 @@ class ControllerExceptionHandlerTest {
         then(response)
                 .hasFieldOrPropertyWithValue("status", HttpStatus.BAD_REQUEST.value())
                 .hasFieldOrPropertyWithValue("detail", "Check data you sent is correct");
-        assertLogs(logListener.getEvents(), "dto_not_valid_exception_with_null.json", getClass());
+        then(logCaptor.getEvents()).containsSubsequence(LogEvents.of(
+                "WARN", "DTO validation error: null"
+        ));
     }
 
     @DisplayName("""
@@ -93,8 +86,7 @@ class ControllerExceptionHandlerTest {
             then log validation errors, return BAD_REQUEST and validation errors
             """)
     @Test
-    void givenErrorsAreNotNull_WhenHandleDtoNotValidExceptionAndErrorsNotNull_ThenReturnProblemsDetailWithErrorsAndLog()
-            throws Exception {
+    void givenErrorsAreNotNull_WhenHandleDtoNotValidExceptionAndErrorsNotNull_ThenReturnProblemsDetailWithErrorsAndLog() {
         final DtoNotValidException exception = new DtoNotValidException(mockErrors());
 
         final ProblemDetail response = exceptionHandler.handleDtoNotValidException(exception);
@@ -108,16 +100,17 @@ class ControllerExceptionHandlerTest {
                                         "email", Set.of("", "exceeds"),
                                         "name", Set.of("contains", "exceeds")
                                 )));
-        assertLogs(logListener.getEvents(), "dto_not_valid_exception.json", getClass());
+        then(logCaptor.getEvents()).containsSubsequence(LogEvents.of(
+                "WARN", "DTO validation error: {email=[, exceeds], name=[contains, exceeds]}"
+        ));
     }
-
 
     @DisplayName("""
             When handle UserNotFoundException,
             then log error message and return NOT_FOUND
             """)
     @Test
-    void whenHandleUserNotFoundException_ThenReturnProblemDetailsAndLog() throws Exception {
+    void whenHandleUserNotFoundException_ThenReturnProblemDetailsAndLog() {
         final UserNotFoundException exception = new UserNotFoundException(ID);
 
         final ProblemDetail response = exceptionHandler.handleUserNotFoundException(exception);
@@ -125,7 +118,9 @@ class ControllerExceptionHandlerTest {
         then(response)
                 .hasFieldOrPropertyWithValue("status", HttpStatus.NOT_FOUND.value())
                 .hasFieldOrPropertyWithValue("detail", "User %s does not exist".formatted(ID));
-        assertLogs(logListener.getEvents(), "user_not_found_exception.json", getClass());
+        then(logCaptor.getEvents()).containsSubsequence(LogEvents.of(
+                "WARN", "User 92f08b0a-4302-40ff-823d-b9ce18522552 does not exist"
+        ));
     }
 
     @DisplayName("""
@@ -133,7 +128,7 @@ class ControllerExceptionHandlerTest {
             then log error message and return CONFLICT
             """)
     @Test
-    void whenHandleDuplicateEmailException_ThenReturnProblemDetailAndLog() throws Exception {
+    void whenHandleDuplicateEmailException_ThenReturnProblemDetailAndLog() {
         final DuplicateEmailException exception = new DuplicateEmailException(EMAIL);
 
         final ProblemDetail response = exceptionHandler.handleDuplicateEmailException(exception);
@@ -141,7 +136,9 @@ class ControllerExceptionHandlerTest {
         then(response)
                 .hasFieldOrPropertyWithValue("status", HttpStatus.CONFLICT.value())
                 .hasFieldOrPropertyWithValue("detail", "User with email %s already registered".formatted(EMAIL));
-        assertLogs(logListener.getEvents(), "duplicate_email_exception.json", getClass());
+        then(logCaptor.getEvents()).containsSubsequence(LogEvents.of(
+                "WARN", "User with email john@mail.com already registered"
+        ));
     }
 
     @DisplayName("""
@@ -149,7 +146,7 @@ class ControllerExceptionHandlerTest {
             then log error message and return CONFLICT
             """)
     @Test
-    void whenHandleUserDeletedException_ThenReturnProblemDetailAndLog() throws Exception {
+    void whenHandleUserDeletedException_ThenReturnProblemDetailAndLog() {
         final UserDeletedException exception = new UserDeletedException(ID);
 
         final ProblemDetail response = exceptionHandler.handleUserDeletedException(exception);
@@ -157,7 +154,9 @@ class ControllerExceptionHandlerTest {
         then(response)
                 .hasFieldOrPropertyWithValue("status", HttpStatus.CONFLICT.value())
                 .hasFieldOrPropertyWithValue("detail", "Cannot update user %s: user deleted".formatted(ID));
-        assertLogs(logListener.getEvents(), "user_deleted_exception.json", getClass());
+        then(logCaptor.getEvents()).containsSubsequence(LogEvents.of(
+                "WARN", "Cannot update user 92f08b0a-4302-40ff-823d-b9ce18522552: user deleted"
+        ));
     }
 
     @DisplayName("""
@@ -165,7 +164,7 @@ class ControllerExceptionHandlerTest {
             then log error message and return CONFLICT
             """)
     @Test
-    void whenHandleObjectOptimisticLockingFailureException_ThenReturnProblemRetailAndLog() throws  Exception {
+    void whenHandleObjectOptimisticLockingFailureException_ThenReturnProblemRetailAndLog() {
         final ObjectOptimisticLockingFailureException exception = new ObjectOptimisticLockingFailureException(
                 User.class, ID);
 
@@ -174,7 +173,11 @@ class ControllerExceptionHandlerTest {
         then(response)
                 .hasFieldOrPropertyWithValue("status", HttpStatus.CONFLICT.value())
                 .hasFieldOrPropertyWithValue("detail", "Someone updated data in parallel. Try again later.");
-        assertLogs(logListener.getEvents(), "object_optimistic_locking_failure-exception.json", getClass());
+        then(logCaptor.getEvents()).containsSubsequence(LogEvents.of(
+                "WARN",
+                "Object of class [io.github.akuniutka.user.entity.User] with identifier "
+                        + "[92f08b0a-4302-40ff-823d-b9ce18522552]: optimistic locking failed"
+        ));
     }
 
     @DisplayName("""
@@ -182,7 +185,7 @@ class ControllerExceptionHandlerTest {
             then log error message and exception, return INTERNAL_SERVER_ERROR
             """)
     @Test
-    void whenHandleThrowable_ThenReturnProblemDetailAndLog() throws Exception {
+    void whenHandleThrowable_ThenReturnProblemDetailAndLog() {
         final RuntimeException exception = new RuntimeException("Test exception");
 
         final ProblemDetail response = exceptionHandler.handleThrowable(exception);
@@ -190,7 +193,9 @@ class ControllerExceptionHandlerTest {
         then(response)
                 .hasFieldOrPropertyWithValue("status", HttpStatus.INTERNAL_SERVER_ERROR.value())
                 .hasFieldOrPropertyWithValue("detail", "Please contact site admin");
-        assertLogs(logListener.getEvents(), "throwable.json", getClass());
+        then(logCaptor.getEvents()).containsSubsequence(LogEvents.of(
+                "ERROR", "Test exception"
+        ));
     }
 
     private HttpInputMessage emptyHttpMessage() {
