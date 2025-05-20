@@ -3,10 +3,14 @@ package io.github.akuniutka.log;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.read.ListAppender;
+import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.extension.AfterEachCallback;
 import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
+import org.junit.platform.commons.support.AnnotationSupport;
+import org.junit.platform.commons.support.HierarchyTraversalMode;
+import org.junit.platform.commons.support.SearchOption;
 import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Field;
@@ -17,72 +21,51 @@ import java.util.Objects;
 public class LogCaptureExtension implements BeforeEachCallback, AfterEachCallback {
 
     @Override
-    public void beforeEach(final ExtensionContext context) throws Exception {
-        final Object instance = getInstance(context);
-        final Class<?> instanceClass = getInstanceClass(instance);
-        final Class<?> loggedClass = getLoggedClass(instanceClass);
-        final Field targetField = getTargetField(instanceClass);
-        if (loggedClass == null || targetField == null) {
+    public void beforeEach(@NonNull final ExtensionContext context) throws Exception {
+        if (context.getTestInstance().isEmpty() || context.getTestClass().isEmpty()) {
             return;
         }
-        targetField.setAccessible(true);
+        final Object testInstance = context.getTestInstance().get();
+        final Class<?> testClass = context.getTestClass().get();
+        final Class<?> loggedClass = getLoggedClass(testClass);
+        final List<Field> targetFields = getTargetFields(testClass);
+        if (loggedClass == null || targetFields.isEmpty()) {
+            return;
+        }
         final LogCaptorImpl logCaptor = new LogCaptorImpl(loggedClass);
-        targetField.set(instance, logCaptor);
+        for (Field targetField : targetFields) {
+            targetField.setAccessible(true);
+            targetField.set(testInstance, logCaptor);
+        }
         logCaptor.start();
     }
 
     @Override
-    public void afterEach(final ExtensionContext context) throws Exception {
-        final Object instance = getInstance(context);
-        final Class<?> instanceClass = getInstanceClass(instance);
-        final Field targetField = getTargetField(instanceClass);
-        if (targetField == null) {
+    public void afterEach(@NonNull final ExtensionContext context) throws Exception {
+        if (context.getTestInstance().isEmpty() || context.getTestClass().isEmpty()) {
             return;
         }
-        targetField.setAccessible(true);
-        final Object value = targetField.get(instance);
-        if (value instanceof LogCaptorImpl logCaptor) {
-            logCaptor.stop();
+        final Object testInstance = context.getTestInstance().get();
+        final Class<?> testClass = context.getTestClass().get();
+        final List<Field> targetFields = getTargetFields(testClass);
+        for (Field targetField : targetFields) {
+            targetField.setAccessible(true);
+            final Object value = targetField.get(testInstance);
+            if (value instanceof LogCaptorImpl logCaptor) {
+                logCaptor.stop();
+            }
+            targetField.set(testInstance, null);
         }
-        targetField.set(instance, null);
-    }
-
-    private Object getInstance(final ExtensionContext context) {
-        if (context == null || context.getTestInstance().isEmpty()) {
-            return null;
-        }
-        return context.getTestInstance().get();
-    }
-
-    private Class<?> getInstanceClass(final Object instance) {
-        if (instance == null) {
-            return null;
-        }
-        return instance.getClass();
     }
 
     private Class<?> getLoggedClass(final Class<?> instanceClass) {
-        if (instanceClass == null) {
-            return null;
-        }
-        WithLogCapture annotation = instanceClass.getAnnotation(WithLogCapture.class);
-        if (annotation == null) {
-            return null;
-        }
-        return annotation.value();
+        return AnnotationSupport.findAnnotation(instanceClass, WithLogCapture.class,
+                SearchOption.INCLUDE_ENCLOSING_CLASSES).map(WithLogCapture::value).orElse(null);
     }
 
-    private Field getTargetField(final Class<?> instanceClass) {
-        if (instanceClass == null) {
-            return null;
-        }
-        final Field[] fields = instanceClass.getDeclaredFields();
-        for (Field field : fields) {
-            if (field.isAnnotationPresent(InjectLogCaptor.class) && field.getType() == LogCaptor.class) {
-                return field;
-            }
-        }
-        return null;
+    private List<Field> getTargetFields(@NonNull final Class<?> instanceClass) {
+        return AnnotationSupport.findAnnotatedFields(instanceClass, InjectLogCaptor.class,
+                field -> field.getType() == LogCaptor.class, HierarchyTraversalMode.TOP_DOWN);
     }
 
     private static class LogCaptorImpl implements LogCaptor {

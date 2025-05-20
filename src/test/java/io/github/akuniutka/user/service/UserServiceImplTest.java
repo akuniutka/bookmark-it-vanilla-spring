@@ -34,6 +34,7 @@ import static org.mockito.Mockito.lenient;
 
 @DisplayName("UserServiceImpl Unit Tests")
 @ExtendWith(MockitoExtension.class)
+@WithLogCapture(UserServiceImpl.class)
 class UserServiceImplTest {
 
     @Mock
@@ -53,7 +54,6 @@ class UserServiceImplTest {
 
     @DisplayName("Add a new user")
     @Nested
-    @WithLogCapture(UserServiceImpl.class)
     class AddUserTest {
 
         @InjectLogCaptor
@@ -193,7 +193,6 @@ class UserServiceImplTest {
 
     @DisplayName("Update a user")
     @Nested
-    @WithLogCapture(UserServiceImpl.class)
     class UpdateUserTest {
 
         @InjectLogCaptor
@@ -364,7 +363,6 @@ class UserServiceImplTest {
 
     @DisplayName("Delete a user by their ID")
     @Nested
-    @WithLogCapture(UserServiceImpl.class)
     class DeleteUserByIdTest {
 
         @InjectLogCaptor
