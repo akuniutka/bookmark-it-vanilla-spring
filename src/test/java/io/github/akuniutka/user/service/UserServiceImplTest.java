@@ -37,6 +37,9 @@ import static org.mockito.Mockito.lenient;
 @WithLogCapture(UserServiceImpl.class)
 class UserServiceImplTest {
 
+    @InjectLogCaptor
+    LogCaptor logCaptor;
+
     @Mock
     private UserRepository mockRepository;
 
@@ -55,9 +58,6 @@ class UserServiceImplTest {
     @DisplayName("Add a new user")
     @Nested
     class AddUserTest {
-
-        @InjectLogCaptor
-        LogCaptor logCaptor;
 
         @DisplayName("""
                 Given a user is null,
@@ -194,9 +194,6 @@ class UserServiceImplTest {
     @DisplayName("Update a user")
     @Nested
     class UpdateUserTest {
-
-        @InjectLogCaptor
-        LogCaptor logCaptor;
 
         @DisplayName("""
                 Given a patch is null,
@@ -364,9 +361,6 @@ class UserServiceImplTest {
     @DisplayName("Delete a user by their ID")
     @Nested
     class DeleteUserByIdTest {
-
-        @InjectLogCaptor
-        LogCaptor logCaptor;
 
         @DisplayName("""
                 Given ID is null,

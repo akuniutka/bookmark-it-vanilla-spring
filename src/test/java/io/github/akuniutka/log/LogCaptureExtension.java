@@ -4,10 +4,10 @@ import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.read.ListAppender;
 import lombok.NonNull;
-import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.extension.AfterEachCallback;
 import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
+import org.junit.jupiter.api.extension.TestInstancePostProcessor;
 import org.junit.platform.commons.support.AnnotationSupport;
 import org.junit.platform.commons.support.HierarchyTraversalMode;
 import org.junit.platform.commons.support.SearchOption;
@@ -17,44 +17,46 @@ import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Objects;
 
-@Slf4j
-public class LogCaptureExtension implements BeforeEachCallback, AfterEachCallback {
+public class LogCaptureExtension implements TestInstancePostProcessor, BeforeEachCallback, AfterEachCallback {
+
+    private static final ExtensionContext.Namespace NAMESPACE = ExtensionContext.Namespace.create("LogCaptor");
+    private static final String STORE_KEY = "Captor";
 
     @Override
-    public void beforeEach(@NonNull final ExtensionContext context) throws Exception {
-        if (context.getTestInstance().isEmpty() || context.getTestClass().isEmpty()) {
-            return;
-        }
-        final Object testInstance = context.getTestInstance().get();
-        final Class<?> testClass = context.getTestClass().get();
-        final Class<?> loggedClass = getLoggedClass(testClass);
-        final List<Field> targetFields = getTargetFields(testClass);
+    public void postProcessTestInstance(final Object testInstance, final ExtensionContext context)
+            throws IllegalAccessException {
+        final Class<?> loggedClass = getLoggedClass(testInstance.getClass());
+        final List<Field> targetFields = getTargetFields(testInstance.getClass());
         if (loggedClass == null || targetFields.isEmpty()) {
             return;
         }
-        final LogCaptorImpl logCaptor = new LogCaptorImpl(loggedClass);
-        for (Field targetField : targetFields) {
-            targetField.setAccessible(true);
-            targetField.set(testInstance, logCaptor);
+        final LogCaptorImpl captor = new LogCaptorImpl(loggedClass);
+        for (Field field : targetFields) {
+            field.setAccessible(true);
+            field.set(testInstance, captor);
         }
-        logCaptor.start();
+        context.getStore(NAMESPACE).put(STORE_KEY, captor);
     }
 
     @Override
-    public void afterEach(@NonNull final ExtensionContext context) throws Exception {
-        if (context.getTestInstance().isEmpty() || context.getTestClass().isEmpty()) {
-            return;
-        }
-        final Object testInstance = context.getTestInstance().get();
-        final Class<?> testClass = context.getTestClass().get();
-        final List<Field> targetFields = getTargetFields(testClass);
-        for (Field targetField : targetFields) {
-            targetField.setAccessible(true);
-            final Object value = targetField.get(testInstance);
-            if (value instanceof LogCaptorImpl logCaptor) {
-                logCaptor.stop();
+    public void beforeEach(ExtensionContext context) {
+        while (context != null) {
+            LogCaptorImpl captor = context.getStore(NAMESPACE).get(STORE_KEY, LogCaptorImpl.class);
+            if (captor != null) {
+                captor.start();
             }
-            targetField.set(testInstance, null);
+            context = context.getParent().orElse(null);
+        }
+    }
+
+    @Override
+    public void afterEach(ExtensionContext context) {
+        while (context != null) {
+            LogCaptorImpl captor = context.getStore(NAMESPACE).get(STORE_KEY, LogCaptorImpl.class);
+            if (captor != null) {
+                captor.stop();
+            }
+            context = context.getParent().orElse(null);
         }
     }
 
