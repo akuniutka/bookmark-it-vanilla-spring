@@ -1,7 +1,0 @@
-{
-  "type": "about:blank",
-  "title": "Internal Server Error",
-  "status": 500,
-  "detail": "Please contact site admin",
-  "instance": "/not-existing-endpoint"
-}
