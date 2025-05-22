@@ -7,7 +7,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.assertj.MockMvcTester;
 import org.springframework.test.web.servlet.assertj.MvcTestResult;
 
-import static io.github.akuniutka.util.TestUtils.loadJson;
 import static org.assertj.core.api.BDDAssertions.then;
 
 @DisplayName("ControllerExceptionHandler Integration Tests")
@@ -22,8 +21,7 @@ class ControllerExceptionHandlerIT {
             then respond with INTERNAL_SERVER_ERROR and application/problem+json and a custom message
             """)
     @Test
-    void whenExceptionInWebLayer_ThenInvokeControllerExceptionHandler() throws Exception {
-        final String responseBody = loadJson("internal_server_error.json", getClass());
+    void whenExceptionInWebLayer_ThenInvokeControllerExceptionHandler() {
 
         final MvcTestResult response = mockMvcTester
                 .get()
@@ -34,6 +32,14 @@ class ControllerExceptionHandlerIT {
         then(response)
                 .hasStatus(HttpStatus.INTERNAL_SERVER_ERROR)
                 .hasContentType(MediaType.APPLICATION_PROBLEM_JSON)
-                .bodyJson().isEqualTo(responseBody);
+                .bodyJson().isEqualTo("""
+                        {
+                          "type": "about:blank",
+                          "title": "Internal Server Error",
+                          "status": 500,
+                          "detail": "Please contact site admin",
+                          "instance": "/not-existing-endpoint"
+                        }
+                        """);
     }
 }

@@ -22,7 +22,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 import static io.github.akuniutka.user.TestUser.ID;
-import static io.github.akuniutka.util.TestUtils.loadJson;
 import static io.github.akuniutka.util.TestUtils.refContains;
 import static org.assertj.core.api.BDDAssertions.then;
 import static org.mockito.ArgumentMatchers.refEq;
@@ -55,9 +54,7 @@ class UserControllerIT {
             then create a user, respond with OK and the user created
             """)
     @Test
-    void whenPostAtBaseUrl_ThenInvokeCreateUser() throws Exception {
-        final String requestBody = loadJson("requests/create_user.json", getClass());
-        final String responseBody = loadJson("responses/create_user.json", getClass());
+    void whenPostAtBaseUrl_ThenInvokeCreateUser() {
         given(mockUserMapper.mapToEntity(TestCreateUserRequest.base())).willReturn(TestUser.fresh());
         given(mockUserService.addUser(refEq(TestUser.fresh()))).willReturn(TestUser.persisted());
         given(mockUserMapper.mapToDto(refEq(TestUser.persisted()))).willReturn(TestUserDto.base());
@@ -68,13 +65,28 @@ class UserControllerIT {
                 .characterEncoding(StandardCharsets.UTF_8)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(requestBody)
+                .content("""
+                        {
+                          "firstName": "John",
+                          "lastName": "Doe",
+                          "email": "john@mail.com"
+                        }
+                        """)
                 .exchange();
 
         then(response)
                 .hasStatus(HttpStatus.OK)
                 .hasContentType(MediaType.APPLICATION_JSON)
-                .bodyJson().isEqualTo(responseBody);
+                .bodyJson().isEqualTo("""
+                        {
+                          "id": "92f08b0a-4302-40ff-823d-b9ce18522552",
+                          "firstName": "John",
+                          "lastName": "Doe",
+                          "email": "john@mail.com",
+                          "state": "ACTIVE",
+                          "registrationDate": "2001-02-03T04:05:06.789012Z"
+                        }
+                        """);
     }
 
     @DisplayName("""
@@ -82,8 +94,7 @@ class UserControllerIT {
             then respond with OK and the list of users
             """)
     @Test
-    void whenGetAtBaseUrl_ThenInvokeFindAllUsers() throws Exception {
-        final String responseBody = loadJson("responses/find_all_users.json", getClass());
+    void whenGetAtBaseUrl_ThenInvokeFindAllUsers() {
         given(mockUserService.findAllUsers()).willReturn(List.of(TestUser.persisted()));
         given(mockUserMapper.mapToDto(refContains(TestUser.persisted()))).willReturn(List.of(TestUserDto.base()));
 
@@ -96,7 +107,18 @@ class UserControllerIT {
         then(response)
                 .hasStatus(HttpStatus.OK)
                 .hasContentType(MediaType.APPLICATION_JSON)
-                .bodyJson().isEqualTo(responseBody);
+                .bodyJson().isEqualTo("""
+                        [
+                          {
+                            "id": "92f08b0a-4302-40ff-823d-b9ce18522552",
+                            "firstName": "John",
+                            "lastName": "Doe",
+                            "email": "john@mail.com",
+                            "state": "ACTIVE",
+                            "registrationDate": "2001-02-03T04:05:06.789012Z"
+                          }
+                        ]
+                        """);
     }
 
     @DisplayName("""
@@ -104,8 +126,7 @@ class UserControllerIT {
             then respond with OK and the user
             """)
     @Test
-    void whenGetAtBaseUrlWithUserId_ThenInvokeGetUserById() throws Exception {
-        final String responseBody = loadJson("responses/get_user_by_id.json", getClass());
+    void whenGetAtBaseUrlWithUserId_ThenInvokeGetUserById() {
         given(mockUserService.getUserById(ID)).willReturn(TestUser.persisted());
         given(mockUserMapper.mapToDto(refEq(TestUser.persisted()))).willReturn(TestUserDto.base());
 
@@ -118,7 +139,16 @@ class UserControllerIT {
         then(response)
                 .hasStatus(HttpStatus.OK)
                 .hasContentType(MediaType.APPLICATION_JSON)
-                .bodyJson().isEqualTo(responseBody);
+                .bodyJson().isEqualTo("""
+                        {
+                          "id": "92f08b0a-4302-40ff-823d-b9ce18522552",
+                          "firstName": "John",
+                          "lastName": "Doe",
+                          "email": "john@mail.com",
+                          "state": "ACTIVE",
+                          "registrationDate": "2001-02-03T04:05:06.789012Z"
+                        }
+                        """);
     }
 
     @DisplayName("""
@@ -126,9 +156,7 @@ class UserControllerIT {
             then respond with OK and the user updated
             """)
     @Test
-    void whenPatchAtBaseUrlWithUserId_ThenInvokeUpdateUser() throws Exception {
-        final String requestBody = loadJson("requests/update_user.json", getClass());
-        final String responseBody = loadJson("responses/update_user.json", getClass());
+    void whenPatchAtBaseUrlWithUserId_ThenInvokeUpdateUser() {
         given(mockUserMapper.mapToEntity(ID, TestUpdateUserRequest.base())).willReturn(TestUser.patch());
         given(mockUserService.updateUser(refEq(TestUser.patch()))).willReturn(TestUser.patched());
         given(mockUserMapper.mapToDto(refEq(TestUser.patched()))).willReturn(TestUserDto.patched());
@@ -139,13 +167,29 @@ class UserControllerIT {
                 .characterEncoding(StandardCharsets.UTF_8)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(requestBody)
+                .content("""
+                        {
+                          "firstName": "Jack",
+                          "lastName": "Sparrow",
+                          "email": "jack@mail.com",
+                          "state": "BLOCKED"
+                        }
+                        """)
                 .exchange();
 
         then(response)
                 .hasStatus(HttpStatus.OK)
                 .hasContentType(MediaType.APPLICATION_JSON)
-                .bodyJson().isEqualTo(responseBody);
+                .bodyJson().isEqualTo("""
+                        {
+                          "id": "92f08b0a-4302-40ff-823d-b9ce18522552",
+                          "firstName": "Jack",
+                          "lastName": "Sparrow",
+                          "email": "jack@mail.com",
+                          "state": "BLOCKED",
+                          "registrationDate": "2001-02-03T04:05:06.789012Z"
+                        }
+                        """);
     }
 
     @DisplayName("""
@@ -153,8 +197,7 @@ class UserControllerIT {
             then respond with OK and the user deleted
             """)
     @Test
-    void whenDeleteAtBaseUrlWithUserId_ThenInvokeDeleteUserById() throws Exception {
-        final String responseBody = loadJson("responses/delete_user.json", getClass());
+    void whenDeleteAtBaseUrlWithUserId_ThenInvokeDeleteUserById() {
         given(mockUserService.deleteUserById(ID)).willReturn(TestUser.deleted());
         given(mockUserMapper.mapToDto(refEq(TestUser.deleted()))).willReturn(TestUserDto.deleted());
 
@@ -167,6 +210,15 @@ class UserControllerIT {
         then(response)
                 .hasStatus(HttpStatus.OK)
                 .hasContentType(MediaType.APPLICATION_JSON)
-                .bodyJson().isEqualTo(responseBody);
+                .bodyJson().isEqualTo("""
+                        {
+                          "id": "92f08b0a-4302-40ff-823d-b9ce18522552",
+                          "firstName": "John",
+                          "lastName": "Doe",
+                          "email": "john@mail.com",
+                          "state": "DELETED",
+                          "registrationDate": "2001-02-03T04:05:06.789012Z"
+                        }
+                        """);
     }
 }
