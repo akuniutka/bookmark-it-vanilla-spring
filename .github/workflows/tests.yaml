@@ -22,3 +22,15 @@ jobs:
     
     - name: Build and test
       run: mvn verify -P check,coverage
+
+    - name: API tests
+      env:
+        DATABASE_USER: ${{ secrets.DATABASE_USER }}
+        DATABASE_PASSWORD: ${{ secrets.DATABASE_PASSWORD }}
+      run: |
+        docker build -f Dockerfile -t bookmark-it:latest . &&
+        docker compose up --detach &&
+        sleep 30 &&
+        docker run -t --rm -v ./postman:/etc/newman --add-host host.docker.internal:host-gateway postman/newman:alpine \
+          run bookmark-it-backend.json --env-var="baseUrl=http://host.docker.internal:8080" &&
+        docker compose down
